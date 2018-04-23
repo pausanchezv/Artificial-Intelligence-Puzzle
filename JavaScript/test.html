@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="binary-heap.js"></script>
+    <script src="heuristic.js"></script>
+    <script src="puzzle-classes.js"></script>
+    <script src="search-algorithms.js"></script>
+    <script src="level-generator.js"></script>
+</head>
+<body>
+
+</body>
+</html>
+
+<script>
+
+    $(document).ready(function(){
+
+        /*var start = [["T1G", "D1G", "T1B", "D1R"],
+                    ["D1B", "###", "T1B", "T1R"],
+                    ["T1B", "T1B", "###", "T1R"],
+                    ["T1B", "T1Y", "T1Y", "T1R"]];
+
+        var goal = [['R', 'Y', 'Y', 'B'],
+                    ['R', '#', 'B', 'B'],
+                    ['R', 'B', '#', 'G'],
+                    ['R', 'G', 'B', 'B']];*/
+
+        /*var start = [['D2G', 'D1G', 'D1H', 'D1H', 'T1Y'],
+                    ['T2G', 'T1G', 'T1F', 'T1B', 'T1Y'],
+                    ['T2G', 'T1G', 'T1F', 'T1B', 'T1Y'],
+                    ['T2G', 'T1G', 'T1B', 'T1B', 'T1Y'],
+                    ['T2G', 'T1G', 'T1B', 'T1B', 'T1Y']];
+
+        var goal = [['B', 'Y', 'B', 'G', 'G'],
+                    ['B', 'Y', 'B', 'G', 'G'],
+                    ['F', 'Y', 'H', 'G', 'G'],
+                    ['F', 'Y', 'H', 'G', 'G'],
+                    ['B', 'Y', 'B', 'G', 'G']];*/
+
+        var start = [["T1B", "B1B", "###", "T1R"],
+                    ["B1B", "B1B", "T1B", "###"],
+                    ["Q2B", "T1B", "###", "T1R"],
+                    ["T1B", "T1B", "T1B", "T1R"]];
+
+        var goal = [['B', 'B', '#', 'B'],
+                    ['R', 'B', 'B', '#'],
+                    ['R', 'B', '#', 'B'],
+                    ['R', 'B', 'B', 'B']];
+
+
+        /*var start = [["D1B", "###", "T1R"],
+                    ["D1B", "T1B", "###"],
+                    ["T1B", "###", "T1R"]];
+
+        var goal = [['B', '#', 'B'],
+                    ['R', 'B', '#'],
+                    ['R', '#', 'B']];*/
+
+
+
+        /*start = [["###", "D1B", "T1B", "T1R"],
+                ["T1B", "T1B", "T1B", "T3B"],
+                ["T1B", "T1B", "D3R", "T3R"],
+                ["T1B", "T1B", "T1B", "T1B"]];
+
+        goal = [['B', 'B', '#', 'B'],
+            ['R', 'B', 'B', '#'],
+            ['R', 'B', '#', 'B'],
+            ['R', 'B', 'B', 'B']];*/
+
+        start = [["T2B", "B2B", "T2B", "B2G", "T2G"],
+                ["###", "T1B", "###", "T1B", "###"],
+                ["T1B", "T1B", "T1B", "T1B", "T1B"],
+                ["###", "T1R", "###", "T1R", "###"],
+                ["T1R", "B1R", "T1R", "B1G", "T1G"]];
+
+         goal = [['G', 'G', 'R', 'R', 'R'],
+                ['#', 'R', '#', 'B', '#'],
+                ['B', 'B', 'B', 'B', 'B'],
+                ['#', 'R', '#', 'B', '#'],
+                ['G', 'G', 'B', 'B', 'B']];
+
+        /**start = [["T2G", "D2G", "###", "B1R", "B1B"],
+                ["T1G", "T1G", "###", "B1R", "B1B"],
+                ["T1G", "T1G", "###", "B1B", "B1R"],
+                ["T1Y", "T1Y", "###", "###", "###"],
+                ["T1Y", "D1Y", "T1Y", "D1Y", "T1Y"]];
+
+        goal = [['Y', 'Y', '#', 'B', 'R'],
+                ['Y', 'Y', '#', 'B', 'R'],
+                ['Y', 'Y', '#', 'R', 'B'],
+                ['Y', 'G', '#', '#', '#'],
+                ['G', 'G', 'G', 'G', 'G']];*/
+
+        start = [["T1B", "T1B", "T1R", "T1B"],
+                ["T1B", "T1R", "T1B", "T1R"]];
+
+        goal = [['R', 'R', 'B', 'R'],
+                ['B', 'B', 'B', 'B']];
+
+        /*var actions = getActions(new State(start, 0, null));
+
+        for (var a in actions) {
+            console.log(a);
+            console.log(actions[a]);
+        }*/
+
+
+        /*console.time('breadthFirstSearch');
+        var problem = new SearchProblem(start, goal, SearchAlgorithms.breadthFirstSearch);
+        problem.showResult();
+        console.timeEnd('breadthFirstSearch');
+
+
+        console.time('uniformCostSearch');
+        var problem2 = new SearchProblem(start, goal, SearchAlgorithms.uniformCostSearch);
+        problem2.showResult();
+        console.timeEnd('uniformCostSearch');*/
+
+        /*console.time('AStarSearch');
+        var problem2 = new SearchProblem(start, goal, SearchAlgorithms.AStarSearch, Heuristic.distancesHeuristic);
+        problem2.showResult();
+        console.timeEnd('AStarSearch');*/
+
+
+
+        for (var i = 0; i < 1; i++) {
+
+            var generator;
+            var level;
+            var solution = [];
+            var problem;
+
+            do {
+
+                generator = new LevelGenerator();
+                level = generator.getGeneratedLevel(true, 'expert');
+
+                start = level[0];
+                goal = level[1];
+
+
+                console.time('AStarSearch');
+                problem = new SearchProblem(start, goal, SearchAlgorithms.AStarSearch, Heuristic.distancesHeuristic);
+                problem.showResult();
+                solution = problem.getSolution();
+                console.timeEnd('AStarSearch');
+
+
+            } while(solution.length < 1);
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    });
+</script>

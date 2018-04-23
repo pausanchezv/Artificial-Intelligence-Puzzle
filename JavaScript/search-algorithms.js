@@ -48,6 +48,25 @@ var Util = {
     },
 
     /**
+     * Array shuffle.
+     */
+    arrayShuffle2: function (array, needle) {
+
+        var j, x, i;
+        for (i = array.length - 1; i > 0; i--) {
+            j = Math.floor(Math.random() * (i + 1));
+
+            if (array[i] !== needle && array[j] !== needle) {
+
+                x = array[i];
+                array[i] = array[j];
+                array[j] = x;
+            }
+        }
+    },
+
+
+    /**
      * Add successor to state successors
      *
      * @private
@@ -100,6 +119,97 @@ var Util = {
             }
         }
         return true;
+    },
+
+    /**
+     * Check whether or not a couple of arrays are equal
+     * @param A
+     * @param B
+     * @returns {boolean}
+     */
+    arrayEquals: function(A, B) {
+        for (var i = 0; i < A.length; i++) {
+            if (A[i] !== B[i]) {
+                return false;
+            }
+        }
+        return true;
+    },
+
+    /**
+     * Make array copy
+     * @param array
+     */
+    arrayCopy: function(array) {
+
+        var clone = [];
+
+        for (var i = 0; i < array.length; i++) {
+            clone[i] = array[i];
+        }
+        return clone;
+
+    },
+
+    /**
+     * Get Array Color
+     * @param array
+     * @returns {Array}
+     */
+    getArrayColor: function(array) {
+
+        var color = [];
+
+        for (var i = 0; i < array.length; i++) {
+            color[i] = array[i][2];
+        }
+        return color;
+
+    },
+
+    /**
+     * Add edges to puzzle
+     * @param graph
+     * @param state
+     */
+    addPuzzleEdges : function(graph, state) {
+
+        var puzzle = state.getPuzzle();
+
+        for (var row = 0; row < puzzle.getNumRows(); row++) {
+            for (var col = 0; col < puzzle.getNumCols(); col++) {
+
+                if (!puzzle.containsWall(row, col)) {
+
+                    // perpendicular
+                    if (!puzzle.containsWall(row - 1, col) && !graph.hasEdge(row.toString() + col.toString(), (row - 1).toString() + col.toString()))
+                        graph.addEdge(row.toString() + col.toString(), (row - 1).toString() + col.toString());
+
+                    if (!puzzle.containsWall(row + 1, col) && !graph.hasEdge(row.toString() + col.toString(), (row + 1).toString() + col.toString()))
+                        graph.addEdge(row.toString() + col.toString(), (row + 1).toString() + col.toString());
+
+                    if (!puzzle.containsWall(row, col - 1) && !graph.hasEdge(row.toString() + col.toString(), row.toString() + (col - 1).toString()))
+                        graph.addEdge(row.toString() + col.toString(), row.toString() + (col - 1).toString());
+
+                    if (!puzzle.containsWall(row, col + 1) && !graph.hasEdge(row.toString() + col.toString(), row.toString() + (col + 1).toString()))
+                        graph.addEdge(row.toString() + col.toString(), row.toString() + (col + 1).toString());
+
+                    // diagonals
+                    if (!puzzle.containsWall(row + 1, col + 1) && !graph.hasEdge(row.toString() + col.toString(), (row +  1).toString() + (col + 1).toString()))
+                        graph.addEdge(row.toString() + col.toString(), (row +  1).toString() + (col + 1).toString());
+
+                    if (!puzzle.containsWall(row + 1, col - 1) && !graph.hasEdge(row.toString() + col.toString(), (row +  1).toString() + (col - 1).toString()))
+                        graph.addEdge(row.toString() + col.toString(), (row +  1).toString() + (col - 1).toString());
+
+                    if (!puzzle.containsWall(row - 1, col + 1) && !graph.hasEdge(row.toString() + col.toString(), (row -  1).toString() + (col + 1).toString()))
+                        graph.addEdge(row.toString() + col.toString(), (row -  1).toString() + (col + 1).toString());
+
+                    if (!puzzle.containsWall(row - 1, col - 1) && !graph.hasEdge(row.toString() + col.toString(), (row -  1).toString() + (col - 1).toString()))
+                        graph.addEdge(row.toString() + col.toString(), (row -  1).toString() + (col - 1).toString());
+
+                }
+            }
+        }
     }
 };
 
@@ -128,14 +238,14 @@ function getActions(state) {
             // The square is just the string extracted from the coordinates
             var square = puzzle.getPuzzle()[row][col];
 
-            // An array is gonna hold the posible actions for each key
+            // An array is gonna hold the possible actions for each key
             actions[[row, col]] = [];
 
             // Straight actions
-            if (square.indexOf('T') >= 0 || square.indexOf('Q') >= 0) {
+            if (puzzle.isTower(square) || puzzle.isQueen(square)) {
 
                 // Adding distance 1
-                if (square.indexOf('1') >= 0 || square.indexOf('2') >= 0 || square.indexOf('3') >= 0) {
+                if (puzzle.getScope(square) === '1' || puzzle.getScope(square) === '2' || puzzle.getScope(square) === '3') {
 
                     if (row > 0 && !puzzle.containsWall(row - 1, col)) {
                         actions[[row, col]].push(new Action("up", 1));
@@ -155,51 +265,51 @@ function getActions(state) {
                 }
 
                 // Adding distance 2
-                if (square.indexOf('2') >= 0 || square.indexOf('3') >= 0) {
+                if (puzzle.getScope(square) === '2' || puzzle.getScope(square) === '3') {
 
-                    if (row > 1 && !puzzle.containsWall(row - 2, col)) {
+                    if (row > 1 && !puzzle.containsWall(row - 2, col) && !puzzle.containsWall(row - 1, col)) {
                         actions[[row, col]].push(new Action("up", 2));
                     }
 
-                    if (row < numRows - 2 && !puzzle.containsWall(row + 2, col)) {
+                    if (row < numRows - 2 && !puzzle.containsWall(row + 2, col) && !puzzle.containsWall(row + 1, col)) {
                         actions[[row, col]].push(new Action("down", 2));
                     }
 
-                    if (col > 1 && !puzzle.containsWall(row, col - 2)) {
+                    if (col > 1 && !puzzle.containsWall(row, col - 2) && !puzzle.containsWall(row, col - 1)) {
                         actions[[row, col]].push(new Action("left", 2));
                     }
 
-                    if (col < numCols - 2 && !puzzle.containsWall(row, col + 2)) {
+                    if (col < numCols - 2 && !puzzle.containsWall(row, col + 2) && !puzzle.containsWall(row, col + 1)) {
                         actions[[row, col]].push(new Action("right", 2));
                     }
                 }
 
                 // Adding distance 3
-                if (square.indexOf('3') >= 0) {
+                if (puzzle.getScope(square) === '3') {
 
-                    if (row > 2 && !puzzle.containsWall(row - 3, col)) {
+                    if (row > 2 && !puzzle.containsWall(row - 3, col) && !puzzle.containsWall(row - 2, col) && !puzzle.containsWall(row - 1, col)) {
                         actions[[row, col]].push(new Action("up", 3));
                     }
 
-                    if (row < numRows - 3 && !puzzle.containsWall(row + 3, col)) {
+                    if (row < numRows - 3 && !puzzle.containsWall(row + 3, col) && !puzzle.containsWall(row + 2, col) && !puzzle.containsWall(row + 1, col)) {
                         actions[[row, col]].push(new Action("down", 3));
                     }
 
-                    if (col > 2 && !puzzle.containsWall(row, col - 3)) {
+                    if (col > 2 && !puzzle.containsWall(row, col - 3) && !puzzle.containsWall(row, col - 2) && !puzzle.containsWall(row, col - 1)) {
                         actions[[row, col]].push(new Action("left", 3));
                     }
 
-                    if (col < numCols - 3 && !puzzle.containsWall(row, col + 3)) {
+                    if (col < numCols - 3 && !puzzle.containsWall(row, col + 3) && !puzzle.containsWall(row, col + 2) && !puzzle.containsWall(row, col + 1)) {
                         actions[[row, col]].push(new Action("right", 3));
                     }
                 }
             }
 
             // Diagonal actions
-            if (square.indexOf('D') >= 0 || square.indexOf('Q') >= 0) {
+            if (puzzle.isBishop(square) || puzzle.isQueen(square)) {
 
                 // Adding distance 1
-                if (square.indexOf('1') >= 0 || square.indexOf('2') >= 0 || square.indexOf('3') >= 0) {
+                if (puzzle.getScope(square) === '1' || puzzle.getScope(square) === '2' || puzzle.getScope(square) === '3') {
 
                     if (row > 0 && col > 0 && !puzzle.containsWall(row - 1, col - 1)) {
                         actions[[row, col]].push(new Action("up-left", 1));
@@ -219,41 +329,41 @@ function getActions(state) {
                 }
 
                 // Adding distance 2
-                if (square.indexOf('2') >= 0 || square.indexOf('3') >= 0) {
+                if (puzzle.getScope(square) === '2' || puzzle.getScope(square) === '3') {
 
-                    if (row > 1 && col > 1 && !puzzle.containsWall(row - 2, col - 2)) {
+                    if (row > 1 && col > 1 && !puzzle.containsWall(row - 2, col - 2) && !puzzle.containsWall(row - 1, col - 1)) {
                         actions[[row, col]].push(new Action("up-left", 2));
                     }
 
-                    if (row < numRows - 2 && col > 1 && !puzzle.containsWall(row + 2, col - 2)) {
+                    if (row < numRows - 2 && col > 1 && !puzzle.containsWall(row + 2, col - 2) && !puzzle.containsWall(row + 1, col - 1)) {
                         actions[[row, col]].push(new Action("down-left", 2));
                     }
 
-                    if (col < numCols - 2 && row > 1 && !puzzle.containsWall(row - 2, col + 2)) {
+                    if (col < numCols - 2 && row > 1 && !puzzle.containsWall(row - 2, col + 2) && !puzzle.containsWall(row - 1, col + 1)) {
                         actions[[row, col]].push(new Action("up-right", 2));
                     }
 
-                    if (col < numCols - 2 && row < numRows - 2 && !puzzle.containsWall(row + 2, col + 2)) {
+                    if (col < numCols - 2 && row < numRows - 2 && !puzzle.containsWall(row + 2, col + 2) && !puzzle.containsWall(row + 1, col + 1)) {
                         actions[[row, col]].push(new Action("down-right", 2));
                     }
                 }
 
                 // Adding distance 3
-                if (square.indexOf('3') >= 0) {
+                if (puzzle.getScope(square) === '3') {
 
-                    if (row > 2 && col > 2 && !puzzle.containsWall(row - 3, col - 3)) {
+                    if (row > 2 && col > 2 && !puzzle.containsWall(row - 3, col - 3) && !puzzle.containsWall(row - 1, col - 1) && !puzzle.containsWall(row - 1, col - 1)) {
                         actions[[row, col]].push(new Action("up-left", 3));
                     }
 
-                    if (row < numRows - 3 && col > 2 && !puzzle.containsWall(row + 3, col - 3)) {
+                    if (row < numRows - 3 && col > 2 && !puzzle.containsWall(row + 3, col - 3) && !puzzle.containsWall(row + 2, col - 2) && !puzzle.containsWall(row + 1, col - 1)) {
                         actions[[row, col]].push(new Action("down-left", 3));
                     }
 
-                    if (col < numCols - 3 && row > 2 && !puzzle.containsWall(row - 3, col + 3)) {
+                    if (col < numCols - 3 && row > 2 && !puzzle.containsWall(row - 3, col + 3) && !puzzle.containsWall(row - 2, col + 2) && !puzzle.containsWall(row - 1, col + 1)) {
                         actions[[row, col]].push(new Action("up-right", 3));
                     }
 
-                    if (col < numCols - 3 && row < numRows - 3 && !puzzle.containsWall(row + 3, col + 3)) {
+                    if (col < numCols - 3 && row < numRows - 3 && !puzzle.containsWall(row + 3, col + 3) && !puzzle.containsWall(row + 2, col + 2) && !puzzle.containsWall(row + 1, col + 1)) {
                         actions[[row, col]].push(new Action("down-right", 3));
                     }
                 }
@@ -549,7 +659,6 @@ var SearchAlgorithms = {
      */
     AStarSearch: function(start, goal, heuristic) {
 
-
         // A Binary Heap is gonna hold the queue
         var queue = new BinaryHeap();
 
@@ -569,6 +678,10 @@ var SearchAlgorithms = {
             if (!Util.checkIfArrayContainsMatrix(visited, node.getPuzzle())) {
 
                 SearchAlgorithms.numExpandedStates++;
+
+                if (SearchAlgorithms.numExpandedStates > 5000) {
+                    return [];
+                }
 
                 // Return the solution
                 if (Util.matrixEquals(color.getColor(), goal)) {
@@ -598,7 +711,74 @@ var SearchAlgorithms = {
         }
 
         return [];
+    },
+
+
+    /**
+     * Traversal depth first search which is not a search algorithm here!
+     * @param graph
+     * @param start
+     * @returns {Array}
+     */
+    depthFirstSearch: function(graph, start) {
+
+        // A couple of arrays are gonna hold both the queue and the visited nodes
+        var stack = [start], visited = [];
+
+        // Compute the algorithm until the queue is empty
+        while (stack.length > 0) {
+
+            // Get the last node
+            var node = stack.pop();
+
+            // Pushing the node to visited array
+            if (visited.indexOf(node) < 0) {
+                visited.push(node);
+            }
+
+            // get the node's neighbors
+            var neighbors = graph.neighbors(node);
+
+            // Traverse through the neighbors
+            for (var i = 0; i < neighbors.length; i++) {
+
+                // get the neighbor
+                var neighbor = neighbors[i];
+
+                // Push the neighbors to the stack
+                if (visited.indexOf(neighbor) < 0) {
+                    stack.push(neighbor);
+                }
+            }
+        }
+
+        return visited;
+    },
+
+    /**
+     * Verifying whether or not a puzzle is connected
+     * @param puzzle
+     * @returns {boolean}
+     */
+    isConnectedPuzzle: function(puzzle) {
+
+        // Create a test state
+        var testState = new State(puzzle, 0, null);
+
+        // Create the graph
+        var graph = new Graph();
+
+        // Add edges to graph
+        Util.addPuzzleEdges(graph, testState);
+
+        // Depth first search
+        var dfsPath = SearchAlgorithms.depthFirstSearch(graph, graph.getAnyNode());
+
+        // Return connectivity
+        return dfsPath.length === testState.getPuzzle().getNumCharactersNotWall();
+
     }
+
 };
 
 /**
@@ -651,6 +831,14 @@ SearchProblem.prototype = {
      */
     getNumActions: function() {
         return SearchAlgorithms.actions.length;
+    },
+
+    /**
+     * Solution
+     * @returns {Array}
+     */
+    getSolution: function() {
+        return SearchAlgorithms.actions;
     },
 
     /**

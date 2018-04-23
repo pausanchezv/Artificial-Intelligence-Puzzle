@@ -1,13 +1,24 @@
-
-
-
-
+/**
+ * Heuristic Static Class
+ */
 Heuristic = {
 
+    /**
+     * Euclidean distance
+     * @param a
+     * @param b
+     * @returns {Number}
+     */
     euclideanDistance: function(a, b) {
         return parseFloat(Math.pow(( Math.pow((a[0] - b[0]), 2) + Math.pow((a[1] - b[1]), 2)), 0.5));
     },
 
+    /**
+     * Matches Heuristic based on counting the squares which are placed well
+     * @param state
+     * @param goal
+     * @returns {number}
+     */
     matchesHeuristic: function(state, goal) {
 
         var matching_sum = 0;
@@ -78,9 +89,7 @@ Heuristic = {
                                 }
                             }
                         }
-
                     }
-
                     distances_sum += min_distance;
                 }
             }
