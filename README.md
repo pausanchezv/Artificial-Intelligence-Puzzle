@@ -22,4 +22,19 @@ The second kind of level is one where the start puzzle is constructed beforehand
 
 The first kind of level is better than the second if we are looking for a level really difficult because the player doesn't have any strong model to keep in sight. On the other hand the second type of level is better than the first if we want a beautiful model, the realism decreases but it's easier enjoy the level because you have the feeling that you're building something that makes sense to see.
 
- The basic idea is to mix both kind of levels, random and half-random in order to obtain a final game hard and realistic by using the first level type, but kind of nice to look at by using the second one.
+The basic idea is to mix both kind of levels, random and half-random in order to obtain a final game hard and realistic by using the first level type, but kind of nice to look at by using the second one.
+ 
+ ## A-Star Heuristic
+ 
+Since the problem we're trying to solve is absolutely NP-HARD, we have to get an approximate solution becauseif we need a fast algorithm, then cannot spend much time expanding more nodes than the necessary ones.
+ 
+First of all I tried to get the the best solution always, and I got it by using the Backtracking technique inthe heuristic. But there is a problem: the heuristic is called for each node expansion, in our case, about 8 times. The backtraking was used to find the best square pairs which the distance among all of them was lower. And it worked perfectly because the states was expanded following always the best path since the exhaustive search explores absolutely all the possibilities to select the best one. The problem was that even if including branch and bound techniques, the A* wasn't able to hold if the puzzle size was greater than 9-12 squares.
+
+Finally a Greedy heuristic is used and it's so fast that we can have four distinct heuristics, then throw four A* Search and finally choose the best. It is necessary to keep in mind that there are cases that for example, an heuristic based on the euclidean distance works better than the manhattan distance, and so on...
+If in most cases the solutions found varies around [-2, +2] among themselves, so it's much possible that the best is one of them, and if it's not, then there is no problem because we are very close to the best solution.
+
+But even if we are using a greedy solution, there are some cases that a good solution is extremely difficult to find, especially when the difficulty level is 'expert' and we are using puzzles 5x5, 6x5, 5x6 or 6x6 size. It's difficult to stop the algorithm if some solution is harder to be found. Setting a timer cannot be a good solution, so there is a limit depth on A* Search, then if more than 5000 states have been expanded and we still have no solution, a new puzzle is recomputed and the whole process starts yet again.
+ 
+The conclusion is that, given that the heuristic is just a numerical value, we can have some different heuristics which return different values of different scales, so we cannot call different heuristics from the same A*, but we can call 4 distinct A*, compare 4 results and finally choose the best one.
+ 
+ 
