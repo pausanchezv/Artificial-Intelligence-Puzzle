@@ -1,3 +1,20 @@
+/*********************************************
+ * JavaScript Puzzle classes
+ *********************************************
+ *
+ * Developed by: Pau Sanchez
+ *
+ * website:     pausanchezv.com
+ * Github:      github.com/pausanchezv
+ * Linkedin:    linkedin.com/in/pausanchezv
+ * Twitter:     twitter.com/pausanchezv
+ * Facebook:    facebook.com/pausanchezv
+ *
+ * All rights reserved. - Barcelona 2018 -
+ *
+ **********************************************/
+
+
 /**
  * Action Class Constructor
  *

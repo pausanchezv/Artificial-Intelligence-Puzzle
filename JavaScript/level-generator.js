@@ -1,14 +1,73 @@
+/*********************************************
+ * JavaScript Level Generator
+ *********************************************
+ *
+ * Developed by: Pau Sanchez
+ *
+ * website:     pausanchezv.com
+ * Github:      github.com/pausanchezv
+ * Linkedin:    linkedin.com/in/pausanchezv
+ * Twitter:     twitter.com/pausanchezv
+ * Facebook:    facebook.com/pausanchezv
+ *
+ * All rights reserved. - Barcelona 2018 -
+ *
+ * *******************************************
+ *
+ * There are basically two models of generated levels. The first one is based on an absolutely random way.
+ *
+ * The first thing that we have to do to generate this kind of level is obtaining a valid distribution. A
+ * distribution is an object that contains the percentages of the amount of characters for the level. For
+ * example, it doesn't have sense generating a level that contains only bishops because it has no solution.
+ *
+ * Then we have to get a valid puzzle size, both number of rows and columns. It will be given depending on
+ * the difficulty which is passed through the instance of the object.
+ *
+ * After that it's necessary to obtain the colors of the puzzle. The number of the colors depends
+ * on the puzzle size obtained in the previous step.
+ *
+ * The next stage involves generating the level. First of all we generate the level as an array which will be
+ * used to build a graph that it help us to check whether or not the level is absolutely connected. We can do it using
+ * the Depth First Search Algorithm.
+ * If the generated level has any isolated node, then a recursive call is produced and this stage starts yet again until
+ * we get a valid level.
+ *
+ * As a result we have a puzzle array now, that is based on 3-positional items, first refers to kind of item
+ * (tower, bishop or queen), the second shows the scoop of its move, an finally, third indicates the square color.
+ * Now, we are able to get The goal array which is based on the color. To do that, we can obtain it from the puzzle
+ * array catching just the third position for each item.
+ *
+ * Finally both puzzles start and goal are created using the arrays and depending on the puzzle size. The puzzles
+ * are saved in the levelGenerator object to extract the best solution by using the A* Search Algorithm. But that's
+ * another story which is explained in its section.
+ *
+ **********************************************
+ *
+ * The second kind of level is one where the start puzzle is constructed beforehand by a human, but the goal state is
+ * randomized starting from the first one.
+ *
+ * The first kind of level is better than the second if we are looking for a level really difficult because
+ * the player doesn't have any strong model to keep in sight. On the other hand the second type of level is better
+ * than the first if we want a beautiful model, the realism decreases but it's easier enjoy the level because
+ * you have the feeling that you're building something that makes sense to see.
+ *
+ * The basic idea is to mix both kind of levels, random and half-random in order to obtain a final game hard and
+ * realistic by using the first level type, but kind of nice to look at by using the second one.
+ *
+ **********************************************/
+
 /**
  * Level Generator Class Constructor
- *
- * @param difficult
- * @constructor
  */
 function LevelGenerator(difficult) {
 
+    // Difficulty will be 'hard' if it's not defined
+    if (difficult === undefined) {
+        this.difficult = 'expert';
+    }
+
     // It's the difficulty of the level
     this.difficult = difficult;
-
 }
 
 /**
@@ -21,16 +80,11 @@ LevelGenerator.prototype = {
      * There are 4 kinds of difficulty -Easy-Medium-Hard-Expert-
      * @returns [int,int]
      */
-    getPuzzleSize: function(difficult) {
-
-        // Difficulty will be 'hard' if it's not defined
-        if (difficult === undefined) {
-            difficult = 'expert';
-        }
+    getPuzzleSize: function() {
 
         // Compute the range values
-        var maxSize = difficult === 'easy' ? 3 : difficult === 'medium' ? 4 : difficult === 'hard' ? 5 : 6;
-        var minSize = difficult === 'easy' ? 2 : difficult === 'medium' ? 2 : difficult === 'hard' ? 3 : 4;
+        var maxSize = this.difficult === 'easy' ? 3 : this.difficult === 'medium' ? 4 : this.difficult === 'hard' ? 5 : 6;
+        var minSize = this.difficult === 'easy' ? 2 : this.difficult === 'medium' ? 2 : this.difficult === 'hard' ? 3 : 4;
 
         // Assign both the number of rows and columns
         var numRows = Math.round(Math.random() * (maxSize - minSize) + minSize);
@@ -45,7 +99,7 @@ LevelGenerator.prototype = {
      * @param size
      * @returns {Array}
      */
-    getPuzzleColors: function (size) {
+    getPuzzleColors: function(size) {
 
         // Values
         var genericColors = ["R", "B", "Y", "G", "O", "M"];
@@ -114,7 +168,7 @@ LevelGenerator.prototype = {
      * @param puzzleArray
      * @param colors
      */
-    getCharacterColor: function(puzzleArray, colors) {
+    addCharacterColor: function(puzzleArray, colors) {
 
         // Get the number of involved colors
         var numColors = colors.length;
@@ -138,6 +192,29 @@ LevelGenerator.prototype = {
                 puzzleArray[i] += colors[numColor];
             }
         }
+
+        return this.checkColorsLength(puzzleArray);
+    },
+
+    /**
+     * Check whether or not the amount of color is OK
+     * @param array
+     */
+    checkColorsLength: function(array) {
+
+        var arrayCont = [];
+
+        for (var i = 0; i < array.length; i++) {
+
+            if (array[i] !== Util.Constants.WALL && array[i] !== Util.Constants.BLANK) {
+                if (arrayCont.indexOf(array[i][2]) < 0) {
+                    arrayCont.push(array[i][2]);
+
+                }
+            }
+        }
+
+        return arrayCont.length > 1;
     },
 
 
@@ -181,14 +258,16 @@ LevelGenerator.prototype = {
         Util.arrayShuffle(puzzleArray);
 
         // Add colors to the puzzle
-        this.getCharacterColor(puzzleArray, colors);
+        if (!this.addCharacterColor(puzzleArray, colors)) {
+            alert("Recursion color");
+            this.getGeneratedArray(distribution, colors, numRows, numCols);
+        }
 
         // Shuffle the puzzle after adding the colors
         Util.arrayShuffle(puzzleArray);
 
         // In this point, we have the one-dimensional puzzle
         return puzzleArray;
-
     },
 
     /**
@@ -232,11 +311,6 @@ LevelGenerator.prototype = {
             var arrayColor = Util.getArrayColor(array);
             var cloneColor = Util.getArrayColor(clone);
 
-            // Temp prints
-            console.log("AQUI");
-            console.log(arrayColor);
-            console.log(cloneColor);
-
         } while(Util.arrayEquals(arrayColor, cloneColor));
 
         // Goal array
@@ -264,12 +338,14 @@ LevelGenerator.prototype = {
      */
     showLevelFeatures: function(rows, cols, colors, distribution, array, puzzle, numRecursiveCalls, goal) {
 
+        console.log("");
         console.log("Puzzle distribution percentages:");
         console.log("Queen percentage: " + distribution.queenPercentage + "%");
         console.log("Bishop percentage: " + distribution.bishopPercentage + "%");
         console.log("Tower percentage: " + (100 - distribution.queenPercentage - distribution.bishopPercentage - distribution.blockPercentage) + "%");
         console.log("Block percentage: " + distribution.blockPercentage + "%");
         console.log("");
+        console.log("Difficulty level: " + this.difficult);
         console.log("Number of rows: " + rows);
         console.log("Number of columns: " + cols);
         console.log("");
@@ -285,25 +361,19 @@ LevelGenerator.prototype = {
         console.log(goal);
     },
 
-
     /**
      * Level generator
      * @param showFeatures
      * @param difficult
      * @returns {[null,null]}
      */
-    getGeneratedLevel: function(showFeatures, difficult) {
-
-        // The difficulty will be expert whether it's not defined
-        if (difficult === undefined) {
-            difficult = 'expert';
-        }
+    getGeneratedLevel: function(showFeatures) {
 
         // Get a distribution puzzle
         var distribution = this.getPuzzleDistribution();
 
         // Get the puzzle size depending on the difficulty
-        var size = this.getPuzzleSize(difficult);
+        var size = this.getPuzzleSize();
 
         // get the colors depending on the size which depends on the difficulty
         var colors = this.getPuzzleColors(size);
@@ -363,5 +433,28 @@ LevelGenerator.prototype = {
         return distributions[randNum];
 
     },
+
+    /**
+     * Static method that returns the best solution
+     * @param solutions
+     * @returns {Array}
+     */
+    getBestSolution: function(solutions) {
+
+        var bestSolutionSize = Infinity;
+        var bestSolution = [];
+
+        for (var key in solutions) {
+
+            if (solutions.hasOwnProperty(key)) {
+
+                if (solutions[key].length < bestSolutionSize && solutions[key].length > 0) {
+                    bestSolutionSize = solutions[key].length;
+                    bestSolution = solutions[key];
+                }
+            }
+        }
+        return bestSolution
+    }
 
 };

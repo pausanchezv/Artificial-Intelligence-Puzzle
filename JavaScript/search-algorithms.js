@@ -1,3 +1,385 @@
+/*********************************************
+ * JavaScript Search Algorithms
+ *********************************************
+ *
+ * Developed by: Pau Sanchez
+ *
+ * website:     pausanchezv.com
+ * Github:      github.com/pausanchezv
+ * Linkedin:    linkedin.com/in/pausanchezv
+ * Twitter:     twitter.com/pausanchezv
+ * Facebook:    facebook.com/pausanchezv
+ *
+ * All rights reserved. - Barcelona 2018 -
+ *
+ * *******************************************
+ *
+ * Depth First Search
+ * Breadth First Search
+ * Uniform Cost Search
+ * A-Star Search
+ *
+ **********************************************/
+
+
+/**
+ * Search Algorithms Class Constructor
+ */
+var SearchAlgorithms = {
+
+    // Declarations
+    numExpandedStates: 0,
+    actions: [],
+    puzzles: [],
+
+    /**
+     * Building the search solution
+     * @param node
+     */
+    constructSearchSolution: function(node) {
+
+        // Traverse through the node whilst it has parent
+        while (node.getParent() !== null) {
+
+            // Push the new action
+            SearchAlgorithms.actions.push(node.getAction());
+            SearchAlgorithms.puzzles.push(node.getPuzzle());
+            node = node.getParent();
+        }
+
+        // Reverse the solution arrays
+        SearchAlgorithms.actions.reverse();
+        SearchAlgorithms.puzzles.reverse();
+    },
+
+    /**
+     * Compute the cost of the state
+     * @param node
+     * @param neighbor
+     * @returns {*}
+     */
+    getCost: function(node, neighbor) {
+
+        var cost = node.getCost() + 1;
+
+        if (cost < neighbor.getCost()) {
+            neighbor.setCost(cost);
+            neighbor.setParent(node);
+        }
+
+        return cost
+    },
+
+    /**
+     * Breadth First Search Algorithm
+     *
+     * @param start
+     * @param goal
+     * @returns {*}
+     */
+    breadthFirstSearch: function(start, goal) {
+
+        // A couple of arrays are gonna hold both the queue and the visited nodes
+        var queue = [start], visited = [];
+
+        // Compute the algorithm until the queue is empty
+        while (queue.length > 0) {
+
+            // Get the node and its color
+            var node = queue.shift();
+            var color = node.getPuzzle().getColor();
+
+            // Check if the color matrix is found in visited array
+            if (!Util.checkIfArrayContainsMatrix(visited, node.getPuzzle())) {
+
+                SearchAlgorithms.numExpandedStates++;
+
+                // Return the solution
+                if (Util.matrixEquals(color.getColor(), goal)) {
+                    return SearchAlgorithms.constructSearchSolution(node);
+                }
+
+                visited.push(node.getPuzzle());
+
+                var successors = getSuccessors(node, getActions(node));
+
+                // Expand the node's children
+                for (var i in successors) {
+
+                    var neighbor = successors[i];
+
+                    // Compute the neighbor's parent
+                    if (!Util.checkIfArrayContainsMatrix(visited, neighbor.getPuzzle()) && neighbor.getParent() === null) {
+                        neighbor.setParent(node);
+                    }
+                    queue.push(neighbor);
+                }
+            }
+        }
+        return [];
+    },
+
+    /**
+     * Breadth First Search Algorithm
+     *
+     * @param start
+     * @param goal
+     * @returns {*}
+     */
+    uniformCostSearch: function(start, goal) {
+
+        // A Binary Heap is gonna hold the queue
+        var queue = new BinaryHeap();
+        queue.push([start, 0]);
+
+        // Array of visited nodes
+        var visited = [];
+
+        // Compute the algorithm until the queue is empty
+        while (queue.content.length > 0) {
+
+            // Get the node and its color
+            var node = queue.pop();
+            var color = node.getPuzzle().getColor();
+
+            // Check if the color matrix is found in visited array
+            if (!Util.checkIfArrayContainsMatrix(visited, node.getPuzzle())) {
+
+                SearchAlgorithms.numExpandedStates++;
+
+                // Return the solution
+                if (Util.matrixEquals(color.getColor(), goal)) {
+                    return SearchAlgorithms.constructSearchSolution(node);
+                }
+
+                visited.push(node.getPuzzle());
+
+                var successors = getSuccessors(node, getActions(node));
+
+                // Expand the node's children
+                for (var i in successors) {
+
+                    var neighbor = successors[i];
+
+                    SearchAlgorithms.getCost(node, neighbor);
+                    queue.push([neighbor, neighbor.getCost()]);
+                }
+            }
+        }
+        return [];
+    },
+
+    /**
+     * Breadth First Search Algorithm
+     *
+     * @param start
+     * @param goal
+     * @param heuristic
+     * @returns {*}
+     */
+    AStarSearch: function(start, goal, heuristic) {
+
+        // A Binary Heap is gonna hold the queue
+        var queue = new BinaryHeap();
+
+        queue.push([start, 0]);
+
+        // Array of visited nodes
+        var visited = [];
+
+        // Compute the algorithm until the queue is empty
+        while (!queue.isEmpty()) {
+
+            // Get the node and its color
+            var node = queue.pop();
+            var color = node.getPuzzle().getColor();
+
+            // Check if the color matrix is found in visited array
+            if (!Util.checkIfArrayContainsMatrix(visited, node.getPuzzle())) {
+
+                SearchAlgorithms.numExpandedStates++;
+
+                if (SearchAlgorithms.numExpandedStates > 5000) {
+                    return [];
+                }
+
+                // Return the solution
+                if (Util.matrixEquals(color.getColor(), goal)) {
+                    return SearchAlgorithms.constructSearchSolution(node);
+                }
+
+                visited.push(node.getPuzzle());
+
+                var successors = getSuccessors(node, getActions(node));
+
+                // Expand the node's children
+                for (var i in successors) {
+
+                    // Get the neighbor
+                    var neighbor = successors[i];
+
+                    // Compute the neighbor's cost
+                    var cost = SearchAlgorithms.getCost(node, neighbor);
+
+                    // Compute the heuristic
+                    var heuristicValue = heuristic(neighbor.getPuzzle().getPuzzle(), goal);
+
+                    // Add neighbor to the heap
+                    queue.push([neighbor, cost + heuristicValue]);
+                }
+            }
+        }
+
+        return [];
+    },
+
+
+    /**
+     * Traversal depth first search which is not a search algorithm here!
+     * @param graph
+     * @param start
+     * @returns {Array}
+     */
+    depthFirstSearch: function(graph, start) {
+
+        // A couple of arrays are gonna hold both the queue and the visited nodes
+        var stack = [start], visited = [];
+
+        // Compute the algorithm until the queue is empty
+        while (stack.length > 0) {
+
+            // Get the last node
+            var node = stack.pop();
+
+            // Pushing the node to visited array
+            if (visited.indexOf(node) < 0) {
+                visited.push(node);
+            }
+
+            // get the node's neighbors
+            var neighbors = graph.neighbors(node);
+
+            // Traverse through the neighbors
+            for (var i = 0; i < neighbors.length; i++) {
+
+                // get the neighbor
+                var neighbor = neighbors[i];
+
+                // Push the neighbors to the stack
+                if (visited.indexOf(neighbor) < 0) {
+                    stack.push(neighbor);
+                }
+            }
+        }
+
+        return visited;
+    },
+
+    /**
+     * Verifying whether or not a puzzle is connected
+     * @param puzzle
+     * @returns {boolean}
+     */
+    isConnectedPuzzle: function(puzzle) {
+
+        // Create a test state
+        var testState = new State(puzzle, 0, null);
+
+        // Create the graph
+        var graph = new Graph();
+
+        // Add edges to graph
+        Util.addPuzzleEdges(graph, testState);
+
+        // Depth first search
+        var dfsPath = SearchAlgorithms.depthFirstSearch(graph, graph.getAnyNode());
+
+        // Return connectivity
+        return dfsPath.length === testState.getPuzzle().getNumCharactersNotWall();
+
+    }
+
+};
+
+/**
+ * SearchProblem Class Constructor
+ *
+ * @param startPuzzle
+ * @param goalPuzzle
+ * @param searchAlgorithm
+ * @param heuristic
+ * @constructor
+ */
+function SearchProblem(startPuzzle, goalPuzzle, searchAlgorithm, heuristic) {
+
+    var startState = new State(startPuzzle, 0, null);
+    this.cleanVariables();
+
+    // If there is heuristic then the A-Star algorithm is involved in the search
+    if (heuristic === undefined) {
+        searchAlgorithm(startState, goalPuzzle);
+
+        // Depth First Search, Breadth First Search or Uniform Cost Search
+    } else {
+        searchAlgorithm(startState, goalPuzzle, heuristic);
+    }
+}
+
+/**
+ * SearchProblem Class Prototype
+ */
+SearchProblem.prototype = {
+
+    cleanVariables: function() {
+        SearchAlgorithms.numExpandedStates = 0;
+        SearchAlgorithms.actions = [];
+        SearchAlgorithms.puzzles = [];
+
+    },
+
+    /**
+     * Get the number of states expanded for an specific search problem
+     * @returns {number}
+     */
+    getNumExpandedStates: function() {
+        return SearchAlgorithms.numExpandedStates;
+    },
+
+    /**
+     * Num actions getter
+     * @returns {number}
+     */
+    getNumActions: function() {
+        return SearchAlgorithms.actions.length;
+    },
+
+    /**
+     * Solution
+     * @returns {Array}
+     */
+    getSolution: function() {
+        return SearchAlgorithms.actions;
+    },
+
+    /**
+     * Show the result of the problem
+     */
+    showResult: function() {
+
+        /*for (var i = 0; i < this.getNumActions(); i++) {
+
+            console.log(SearchAlgorithms.actions[i]);
+            console.log(SearchAlgorithms.puzzles[i]);
+        }*/
+
+        console.log("");
+        console.log("A* Search");
+        console.log("Number of actions: " + this.getNumActions());
+        console.log("Number of states expanded: " + this.getNumExpandedStates());
+    }
+};
+
+
 /**
  * Static functions and utilities
  */
@@ -54,8 +436,11 @@ var Util = {
 
         var j, x, i;
         for (i = array.length - 1; i > 0; i--) {
-            j = Math.floor(Math.random() * (i + 1));
 
+            /*do {
+                j = Math.floor(Math.random() * (i + 1));
+            } while (array[j] === needle);*/
+            j = Math.floor(Math.random() * (i + 1));
             if (array[i] !== needle && array[j] !== needle) {
 
                 x = array[i];
@@ -64,7 +449,6 @@ var Util = {
             }
         }
     },
-
 
     /**
      * Add successor to state successors
@@ -502,358 +886,3 @@ function getSuccessors(state, actions) {
     Util.arrayShuffle(successors);
     return successors;
 }
-
-
-
-var SearchAlgorithms = {
-
-    // Declarations
-    numExpandedStates: 0,
-    actions: [],
-    puzzles: [],
-
-    /**
-     * Building the search solution
-     * @param node
-     */
-    constructSearchSolution: function(node) {
-
-        // Traverse through the node whilst it has parent
-        while (node.getParent() !== null) {
-
-            // Push the new action
-            SearchAlgorithms.actions.push(node.getAction());
-            SearchAlgorithms.puzzles.push(node.getPuzzle());
-            node = node.getParent();
-        }
-
-        // Reverse the solution arrays
-        SearchAlgorithms.actions.reverse();
-        SearchAlgorithms.puzzles.reverse();
-    },
-
-    /**
-     * Compute the cost of the state
-     * @param node
-     * @param neighbor
-     * @returns {*}
-     */
-    getCost: function(node, neighbor) {
-
-        var cost = node.getCost() + 1;
-
-        if (cost < neighbor.getCost()) {
-            neighbor.setCost(cost);
-            neighbor.setParent(node);
-        }
-
-        return cost
-    },
-
-    /**
-     * Breadth First Search Algorithm
-     *
-     * @param start
-     * @param goal
-     * @returns {*}
-     */
-    breadthFirstSearch: function(start, goal) {
-
-        // A couple of arrays are gonna hold both the queue and the visited nodes
-        var queue = [start], visited = [];
-
-        // Compute the algorithm until the queue is empty
-        while (queue.length > 0) {
-
-            // Get the node and its color
-            var node = queue.shift();
-            var color = node.getPuzzle().getColor();
-
-            // Check if the color matrix is found in visited array
-            if (!Util.checkIfArrayContainsMatrix(visited, node.getPuzzle())) {
-
-                SearchAlgorithms.numExpandedStates++;
-
-                // Return the solution
-                if (Util.matrixEquals(color.getColor(), goal)) {
-                    return SearchAlgorithms.constructSearchSolution(node);
-                }
-
-                visited.push(node.getPuzzle());
-
-                var successors = getSuccessors(node, getActions(node));
-
-                // Expand the node's children
-                for (var i in successors) {
-
-                    var neighbor = successors[i];
-
-                    // Compute the neighbor's parent
-                    if (!Util.checkIfArrayContainsMatrix(visited, neighbor.getPuzzle()) && neighbor.getParent() === null) {
-                        neighbor.setParent(node);
-                    }
-                    queue.push(neighbor);
-                }
-            }
-        }
-        return [];
-    },
-
-    /**
-     * Breadth First Search Algorithm
-     *
-     * @param start
-     * @param goal
-     * @returns {*}
-     */
-    uniformCostSearch: function(start, goal) {
-
-        // A Binary Heap is gonna hold the queue
-        var queue = new BinaryHeap();
-        queue.push([start, 0]);
-
-        // Array of visited nodes
-        var visited = [];
-
-        // Compute the algorithm until the queue is empty
-        while (queue.content.length > 0) {
-
-            // Get the node and its color
-            var node = queue.pop();
-            var color = node.getPuzzle().getColor();
-
-            // Check if the color matrix is found in visited array
-            if (!Util.checkIfArrayContainsMatrix(visited, node.getPuzzle())) {
-
-                SearchAlgorithms.numExpandedStates++;
-
-                // Return the solution
-                if (Util.matrixEquals(color.getColor(), goal)) {
-                    return SearchAlgorithms.constructSearchSolution(node);
-                }
-
-                visited.push(node.getPuzzle());
-
-                var successors = getSuccessors(node, getActions(node));
-
-                // Expand the node's children
-                for (var i in successors) {
-
-                    var neighbor = successors[i];
-
-                    SearchAlgorithms.getCost(node, neighbor);
-                    queue.push([neighbor, neighbor.getCost()]);
-                }
-            }
-        }
-        return [];
-    },
-
-    /**
-     * Breadth First Search Algorithm
-     *
-     * @param start
-     * @param goal
-     * @param heuristic
-     * @returns {*}
-     */
-    AStarSearch: function(start, goal, heuristic) {
-
-        // A Binary Heap is gonna hold the queue
-        var queue = new BinaryHeap();
-
-        queue.push([start, 0]);
-
-        // Array of visited nodes
-        var visited = [];
-
-        // Compute the algorithm until the queue is empty
-        while (!queue.isEmpty()) {
-
-            // Get the node and its color
-            var node = queue.pop();
-            var color = node.getPuzzle().getColor();
-
-            // Check if the color matrix is found in visited array
-            if (!Util.checkIfArrayContainsMatrix(visited, node.getPuzzle())) {
-
-                SearchAlgorithms.numExpandedStates++;
-
-                if (SearchAlgorithms.numExpandedStates > 5000) {
-                    return [];
-                }
-
-                // Return the solution
-                if (Util.matrixEquals(color.getColor(), goal)) {
-                    return SearchAlgorithms.constructSearchSolution(node);
-                }
-
-                visited.push(node.getPuzzle());
-
-                var successors = getSuccessors(node, getActions(node));
-
-                // Expand the node's children
-                for (var i in successors) {
-
-                    // Get the neighbor
-                    var neighbor = successors[i];
-
-                    // Compute the neighbor's cost
-                    var cost = SearchAlgorithms.getCost(node, neighbor);
-
-                    // Compute the heuristic
-                    var heuristicValue = heuristic(neighbor.getPuzzle().getPuzzle(), goal);
-
-                    // Add neighbor to the heap
-                    queue.push([neighbor, cost + heuristicValue]);
-                }
-            }
-        }
-
-        return [];
-    },
-
-
-    /**
-     * Traversal depth first search which is not a search algorithm here!
-     * @param graph
-     * @param start
-     * @returns {Array}
-     */
-    depthFirstSearch: function(graph, start) {
-
-        // A couple of arrays are gonna hold both the queue and the visited nodes
-        var stack = [start], visited = [];
-
-        // Compute the algorithm until the queue is empty
-        while (stack.length > 0) {
-
-            // Get the last node
-            var node = stack.pop();
-
-            // Pushing the node to visited array
-            if (visited.indexOf(node) < 0) {
-                visited.push(node);
-            }
-
-            // get the node's neighbors
-            var neighbors = graph.neighbors(node);
-
-            // Traverse through the neighbors
-            for (var i = 0; i < neighbors.length; i++) {
-
-                // get the neighbor
-                var neighbor = neighbors[i];
-
-                // Push the neighbors to the stack
-                if (visited.indexOf(neighbor) < 0) {
-                    stack.push(neighbor);
-                }
-            }
-        }
-
-        return visited;
-    },
-
-    /**
-     * Verifying whether or not a puzzle is connected
-     * @param puzzle
-     * @returns {boolean}
-     */
-    isConnectedPuzzle: function(puzzle) {
-
-        // Create a test state
-        var testState = new State(puzzle, 0, null);
-
-        // Create the graph
-        var graph = new Graph();
-
-        // Add edges to graph
-        Util.addPuzzleEdges(graph, testState);
-
-        // Depth first search
-        var dfsPath = SearchAlgorithms.depthFirstSearch(graph, graph.getAnyNode());
-
-        // Return connectivity
-        return dfsPath.length === testState.getPuzzle().getNumCharactersNotWall();
-
-    }
-
-};
-
-/**
- * SearchProblem Class Constructor
- *
- * @param startPuzzle
- * @param goalPuzzle
- * @param searchAlgorithm
- * @param heuristic
- * @constructor
- */
-function SearchProblem(startPuzzle, goalPuzzle, searchAlgorithm, heuristic) {
-
-    var startState = new State(startPuzzle, 0, null);
-    this.cleanVariables();
-
-    // If there is heuristic then the A-Star algorithm is involved in the search
-    if (heuristic === undefined) {
-        searchAlgorithm(startState, goalPuzzle);
-
-    // Depth First Search, Breadth First Search or Uniform Cost Search
-    } else {
-        searchAlgorithm(startState, goalPuzzle, heuristic);
-    }
-}
-
-/**
- * SearchProblem Class Prototype
- */
-SearchProblem.prototype = {
-
-    cleanVariables: function() {
-        SearchAlgorithms.numExpandedStates = 0;
-        SearchAlgorithms.actions = [];
-        SearchAlgorithms.puzzles = [];
-
-    },
-
-    /**
-     * Get the number of states expanded for an specific search problem
-     * @returns {number}
-     */
-    getNumExpandedStates: function() {
-        return SearchAlgorithms.numExpandedStates;
-    },
-
-    /**
-     * Num actions getter
-     * @returns {number}
-     */
-    getNumActions: function() {
-        return SearchAlgorithms.actions.length;
-    },
-
-    /**
-     * Solution
-     * @returns {Array}
-     */
-    getSolution: function() {
-        return SearchAlgorithms.actions;
-    },
-
-    /**
-     * Show the result of the problem
-     */
-    showResult: function() {
-
-        for (var i = 0; i < this.getNumActions(); i++) {
-
-            console.log(SearchAlgorithms.actions[i]);
-            console.log(SearchAlgorithms.puzzles[i]);
-        }
-
-        console.log("Number of actions: " + this.getNumActions());
-        console.log("Number of states expanded: " + this.getNumExpandedStates());
-    }
-
-};
