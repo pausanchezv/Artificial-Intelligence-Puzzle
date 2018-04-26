@@ -28,7 +28,7 @@ public final class SearchProblem {
     private final char [][] goal;
     
     // problem variables
-    public static int numExpandedStates = 0;
+
     public static ArrayList<Action> actions;
     public static ArrayList<Puzzle> puzzles;
     
@@ -66,10 +66,11 @@ public final class SearchProblem {
     
     /**
      * A* Search Solver
+     * @param heuristic
      */
-    public void AStarSearchSolver() {
+    public void AStarSearchSolver(Heuristic.Kind heuristic) {
         cleanVariables();
-        SearchAlgorithms.AStarSearch(startState, goal);
+        SearchAlgorithms.AStarSearch(startState, goal, heuristic);
     }
     
     /**
@@ -77,13 +78,13 @@ public final class SearchProblem {
      */
     public void showResult() {
         
-         for (int i = 0; i < actions.size(); i++) {
+        /* for (int i = 0; i < actions.size(); i++) {
             System.out.println("Action >> " + actions.get(i));
             System.out.println("\n" + puzzles.get(i).puzzleToString());
-        }
+        }*/
         
         System.out.println("Num actions >> " + actions.size());
-        System.out.println("Num expanded estates >> " + numExpandedStates);
+        System.out.println("Num expanded estates >> " + SearchAlgorithms.numExpandedStates);
     }
 
     /**
@@ -92,7 +93,7 @@ public final class SearchProblem {
     private void cleanVariables() {
         SearchProblem.actions.clear();
         SearchProblem.puzzles.clear();
-        SearchProblem.numExpandedStates = 0;
+        SearchAlgorithms.numExpandedStates = 0;
     }
     
 }

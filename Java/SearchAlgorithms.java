@@ -392,16 +392,18 @@ public class SearchAlgorithms {
         Collections.reverse(SearchProblem.actions);
         Collections.reverse(SearchProblem.puzzles);
         
-        SearchProblem.numExpandedStates = numExpandedStates;
-        
         return SearchProblem.actions; 
     }
     
-    
+    /**
+     * Get node cost
+     * @param node
+     * @param neighbor
+     * @return 
+     */
     private static float getCost(State node, State neighbor) {
         
-        float cost = node.getCost() + 1;//(float) neighbor.getAction().getValue();
-        
+        float cost = node.getCost() + 1;
         
         if (cost < neighbor.getCost()) {
             neighbor.setCost(cost);
@@ -519,9 +521,10 @@ public class SearchAlgorithms {
      * 
      * @param start
      * @param goal
+     * @param heuristic
      * @return 
      */
-    public static ArrayList<Action> AStarSearch(State start, char [][] goal) {
+    public static ArrayList<Action> AStarSearch(State start, char [][] goal, Heuristic.Kind heuristic) {
         
         // Control the number of expanded states
         numExpandedStates = 0;
@@ -543,11 +546,17 @@ public class SearchAlgorithms {
                 
                 numExpandedStates++;
                 
+                // Check the expanded nodes and break if it's necessary
+                if (numExpandedStates > 5000) {
+                    return new ArrayList();
+                }
+                
                 // Return the solution
                 if (Arrays.deepEquals(color.getColor(), goal)) {
                     return getSearchSolution(node);
                 }
                 
+                // Add node to visited
                 visited.add(node.getPuzzle());
              
                 // Expand the node's children
@@ -556,8 +565,31 @@ public class SearchAlgorithms {
                     // Compute the cost of the node
                     float cost = getCost(node, neighbor);
                     
-                    float heuristic = Heuristic.distancesHeuristic(neighbor.getPuzzle().getPuzzle(), goal);
-                    queue.push(neighbor, cost + heuristic);
+                    // Heuristic value
+                    float heuristicValue = 0;
+                    
+                    // Select heuristic kind
+                    switch (heuristic) {
+                        
+                        case MANHATTAN:
+                            heuristicValue = Heuristic.manhattanDistancesHeuristic(neighbor.getPuzzle().getPuzzle(), goal);
+                            break;
+                            
+                        case EUCLIDEAN:
+                            heuristicValue = Heuristic.euclideanDistancesHeuristic(neighbor.getPuzzle().getPuzzle(), goal);
+                            break;
+                            
+                        case MANHATTAN_MATCHINGS:
+                            heuristicValue = Heuristic.manhattanDistancesHeuristicWithMatches(neighbor.getPuzzle().getPuzzle(), goal);
+                            break;
+                        
+                        case EUCLIDEAN_MATCHINGS:
+                            heuristicValue = Heuristic.euclideanDistancesHeuristicWithMatches(neighbor.getPuzzle().getPuzzle(), goal);
+                            break;
+                    }
+                    
+                    // Compute neighbor
+                    queue.push(neighbor, cost + heuristicValue);
                 }
             }
         }
