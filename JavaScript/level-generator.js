@@ -184,7 +184,9 @@ LevelGenerator.prototype = {
             // Changing the color whether the index is greater than the color-position
             if (i >= colorsPosition) {
                 colorsPosition += colorsStatic;
-                numColor++;
+
+                if (numColor < numColors -1)
+                    numColor++;
             }
 
             // Add the color to the square

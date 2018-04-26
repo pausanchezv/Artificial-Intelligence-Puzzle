@@ -62,7 +62,7 @@ Heuristic = {
      * @returns {Number}
      */
     euclideanDistance: function(a, b) {
-        return parseFloat(Math.pow(( Math.pow((a[0] - b[0]), 2) + Math.pow((a[1] - b[1]), 2)), 0.5));
+        return parseFloat(Math.pow((Math.pow((a[0] - b[0]), 2) + Math.pow((a[1] - b[1]), 2)), 0.5));
     },
 
     /**

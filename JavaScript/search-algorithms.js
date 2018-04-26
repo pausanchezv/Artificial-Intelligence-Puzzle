@@ -437,11 +437,11 @@ var Util = {
         var j, x, i;
         for (i = array.length - 1; i > 0; i--) {
 
-            do {
+            /*do {
                 j = Math.floor(Math.random() * (i + 1));
-            } while (array[j] === needle);
-            //j = Math.floor(Math.random() * (i + 1));
-            if (array[i] !== needle /*&& array[j] !== needle*/) {
+            } while (array[j] === needle);*/
+            j = Math.floor(Math.random() * (i + 1));
+            if (array[i] !== needle && array[j] !== needle) {
 
                 x = array[i];
                 array[i] = array[j];
