@@ -1,4 +1,4 @@
-# puzzle-x
+# Puzzle
 Artificial Intelligence - Puzzle Game
 
 ## Level Generator
