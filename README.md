@@ -39,6 +39,7 @@ But even if we are using a greedy solution, there are some cases that a good sol
 The conclusion is that, given that the heuristic is just a numerical value, we can have some different heuristics which return different values from different scales, so we cannot call different heuristics from the same A*, but we can call 4 distinct A*, compare 4 results and finally choose the best one.
  
  
- 
-Pau Sanchez - Computer Engineer & Software developer
 [www.pausanchezv.com](http://pausanchezv.com/) 
+
+Pau Sanchez - Computer Engineer & Software developer
+
