@@ -64,10 +64,10 @@ public class SearchAlgorithms {
                 actions.put(key, new ArrayList<>());
                 
                 // Straight actions
-                if (square.indexOf('T') >= 0 || square.indexOf('Q') >= 0) {
+                if (Puzzle.isTower(square) || Puzzle.isQueen(square)) {
                     
                     // Adding distance 1
-                    if (square.indexOf('1') >= 0 || square.indexOf('2') >= 0 || square.indexOf('3') >= 0) {
+                    if (Puzzle.getScope(square) == '1' || Puzzle.getScope(square) == '2' || Puzzle.getScope(square) == '3') {
 
                         if (row > 0 && !puzzle.containsWall(row - 1, col)) {
                             actions.get(key).add(new Action("up", 1));
@@ -87,51 +87,51 @@ public class SearchAlgorithms {
                     }
                     
                     // Adding distance 2
-                    if (square.indexOf('2') >= 0 || square.indexOf('3') >= 0) {
+                    if (Puzzle.getScope(square) == '2' || Puzzle.getScope(square) == '3') {
 
-                        if (row > 1 && !puzzle.containsWall(row - 2, col)) {
+                        if (row > 1 && !puzzle.containsWall(row - 2, col) && !puzzle.containsWall(row - 1, col)) {
                             actions.get(key).add(new Action("up", 2));
                         }
 
-                        if (row < numRows - 2 && !puzzle.containsWall(row + 2, col)) {
+                        if (row < numRows - 2 && !puzzle.containsWall(row + 2, col) && !puzzle.containsWall(row + 1, col)) {
                             actions.get(key).add(new Action("down", 2));
                         }
 
-                        if (col > 1 && !puzzle.containsWall(row, col - 2)) {
+                        if (col > 1 && !puzzle.containsWall(row, col - 2) && !puzzle.containsWall(row, col - 1)) {
                             actions.get(key).add(new Action("left", 2));
                         }
 
-                        if (col < numCols - 2 && !puzzle.containsWall(row, col + 2)) {
+                        if (col < numCols - 2 && !puzzle.containsWall(row, col + 2) && !puzzle.containsWall(row, col + 1)) {
                             actions.get(key).add(new Action("right", 2));
                         }
                     }
                     
                     // Adding distance 3
-                    if (square.indexOf('3') >= 0) {
+                    if (Puzzle.getScope(square) == '3') {
 
-                        if (row > 2 && !puzzle.containsWall(row - 3, col)) {
+                        if (row > 2 && !puzzle.containsWall(row - 3, col) && !puzzle.containsWall(row - 2, col) && !puzzle.containsWall(row - 1, col)) {
                             actions.get(key).add(new Action("up", 3));
                         }
 
-                        if (row < numRows - 3 && !puzzle.containsWall(row + 3, col)) {
+                        if (row < numRows - 3 && !puzzle.containsWall(row + 3, col) && !puzzle.containsWall(row + 2, col) && !puzzle.containsWall(row + 1, col)) {
                             actions.get(key).add(new Action("down", 3));
                         }
 
-                        if (col > 2 && !puzzle.containsWall(row, col - 3)) {
+                        if (col > 2 && !puzzle.containsWall(row, col - 3) && !puzzle.containsWall(row, col - 2) && !puzzle.containsWall(row, col - 1)) {
                             actions.get(key).add(new Action("left", 3));
                         }
 
-                        if (col < numCols - 3 && !puzzle.containsWall(row, col + 3)) {
+                        if (col < numCols - 3 && !puzzle.containsWall(row, col + 3) && !puzzle.containsWall(row, col + 2) && !puzzle.containsWall(row, col + 1)) {
                             actions.get(key).add(new Action("right", 3));
                         }
                     }
                 }
                 
                 // Diagonal actions
-                if (square.indexOf('D') >= 0 || square.indexOf('Q') >= 0) {
+                if (Puzzle.isBishop(square) || Puzzle.isQueen(square)) {
                     
                     // Adding distance 1
-                    if (square.indexOf('1') >= 0 || square.indexOf('2') >= 0 || square.indexOf('3') >= 0) {
+                    if (Puzzle.getScope(square) == '1' || Puzzle.getScope(square) == '2' || Puzzle.getScope(square) == '3') {
 
                         if (row > 0 && col > 0 && !puzzle.containsWall(row - 1, col - 1)) {
                             actions.get(key).add(new Action("up-left", 1));
@@ -151,41 +151,41 @@ public class SearchAlgorithms {
                     }
                     
                     // Adding distance 2
-                    if (square.indexOf('2') >= 0 || square.indexOf('3') >= 0) {
+                    if (Puzzle.getScope(square) == '2' || Puzzle.getScope(square) == '3') {
 
-                        if (row > 1 && col > 1 && !puzzle.containsWall(row - 2, col - 2)) {
+                        if (row > 1 && col > 1 && !puzzle.containsWall(row - 2, col - 2) && !puzzle.containsWall(row - 1, col - 1)) {
                             actions.get(key).add(new Action("up-left", 2));
                         }
 
-                        if (row < numRows - 2 && col > 1 && !puzzle.containsWall(row + 2, col - 2)) {
+                        if (row < numRows - 2 && col > 1 && !puzzle.containsWall(row + 2, col - 2) && !puzzle.containsWall(row + 1, col - 1)) {
                             actions.get(key).add(new Action("down-left", 2));
                         }
 
-                        if (col < numCols - 2 && row > 1 && !puzzle.containsWall(row - 2, col + 2)) {
+                        if (col < numCols - 2 && row > 1 && !puzzle.containsWall(row - 2, col + 2) && !puzzle.containsWall(row - 1, col + 1)) {
                             actions.get(key).add(new Action("up-right", 2));
                         }
 
-                        if (col < numCols - 2 && row < numRows - 2 && !puzzle.containsWall(row + 2, col + 2)) {
+                        if (col < numCols - 2 && row < numRows - 2 && !puzzle.containsWall(row + 2, col + 2) && !puzzle.containsWall(row + 1, col + 1)) {
                             actions.get(key).add(new Action("down-right", 2));
                         }
                     }
                     
                     // Adding distance 3
-                    if (square.indexOf('3') >= 0) {
+                    if (Puzzle.getScope(square) == '3') {
 
-                        if (row > 2 && col > 2 && !puzzle.containsWall(row - 3, col - 3)) {
+                        if (row > 2 && col > 2 && !puzzle.containsWall(row - 3, col - 3) && !puzzle.containsWall(row - 1, col - 1) && !puzzle.containsWall(row - 1, col - 1)) {
                             actions.get(key).add(new Action("up-left", 3));
                         }
 
-                        if (row < numRows - 3 && col > 2 && !puzzle.containsWall(row + 3, col - 3)) {
+                        if (row < numRows - 3 && col > 2 && !puzzle.containsWall(row + 3, col - 3) && !puzzle.containsWall(row + 2, col - 2) && !puzzle.containsWall(row + 1, col - 1)) {
                             actions.get(key).add(new Action("down-left", 3));
                         }
 
-                        if (col < numCols - 3 && row > 2 && !puzzle.containsWall(row - 3, col + 3)) {
+                        if (col < numCols - 3 && row > 2 && !puzzle.containsWall(row - 3, col + 3) && !puzzle.containsWall(row - 2, col + 2) && !puzzle.containsWall(row - 1, col + 1)) {
                             actions.get(key).add(new Action("up-right", 3));
                         }
 
-                        if (col < numCols - 3 && row < numRows - 3 && !puzzle.containsWall(row + 3, col + 3)) {
+                        if (col < numCols - 3 && row < numRows - 3 && !puzzle.containsWall(row + 3, col + 3) && !puzzle.containsWall(row + 2, col + 2) && !puzzle.containsWall(row + 1, col + 1)) {
                             actions.get(key).add(new Action("down-right", 3));
                         }
                     }
@@ -566,5 +566,66 @@ public class SearchAlgorithms {
     }
     
     
+    /**
+     * Depth First Search Algorithm. It's a traversal algorithm here. Not search!
+     * 
+     * @param graph
+     * @param start
+     * @return 
+     */
+    public static ArrayList depthFirstSearch(Graph graph, String start) {
+        
+        
+        // A couple of arrays are gonna hold both the queue and the visited nodes
+        ArrayList<String> stack = new ArrayList();
+        ArrayList<String> visited = new ArrayList();
+        stack.add(start);
+                
+        // Compute the algorithm until the queue is empty
+        while (!stack.isEmpty()) {
+            
+            // Get the node and its color
+            String node = stack.remove(stack.size() - 1);
+            
+            // Check if the color matrix is found in visited array
+            if (!visited.contains(node)) {
+                
+                visited.add(node);
+             
+                // Expand the node's children
+                for (Object neighbor: graph.neighbors(node)) {
+                    
+                    // Compute the neighbor's parent
+                    if (!visited.contains((String) neighbor)) {
+                        stack.add((String) neighbor);
+                    }
+                }
+            }
+        }
+        
+        return visited;
+    }
     
+    /**
+     * Verifying whether or not a puzzle is connected
+     * @param puzzle
+     * @return 
+     */
+    public static boolean isConnectedPuzzle(String [][] puzzle) {
+        
+        // Create a test state
+        State testState = new State(puzzle, 0, null);
+        
+        // Create the graph
+        Graph graph = new Graph();
+        
+        // Add edges to graph
+        Graph.addPuzzleEdges(graph, testState);
+        
+        // Depth first search
+        ArrayList dfsPath = depthFirstSearch(graph, graph.getAnyNode());
+
+        // Return connectivity
+        return dfsPath.size() == testState.getPuzzle().getNumCharactersNotWall();
+    }
 }

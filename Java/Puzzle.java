@@ -30,8 +30,8 @@ public class Puzzle {
     private final int numCols;
     
     // Constants
-    private static final String WALL = "###";
-    private static final String BLANK = "...";
+    public static final String WALL = "###";
+    public static final String BLANK = "...";
 
     /**
      * Puzzle Constructor
@@ -57,7 +57,22 @@ public class Puzzle {
      * @return 
      */
     public boolean containsWall(int row, int col) {
-        return WALL.equals(this.puzzle[row][col]) || BLANK.equals(this.puzzle[row][col]);
+        
+        if (row < 0 || col < 0 || row > this.getNumRows() - 1 || col > this.getNumCols() - 1) {
+            
+            return true;
+        }
+        
+        boolean containsWall;
+        
+        try {
+            
+            containsWall = WALL.equals(this.puzzle[row][col]) || BLANK.equals(this.puzzle[row][col]);
+        } catch (Exception e) {
+            containsWall = true;
+        }
+        
+        return containsWall;
     }
     
 
@@ -174,4 +189,59 @@ public class Puzzle {
         
         return Arrays.deepEquals(this.puzzle, other.puzzle);
     }  
+    
+    /**
+     * Check if a square is a queen
+     * @param square
+     * @return 
+     */
+    public static boolean isQueen(String square) {
+        return square.charAt(0) == 'Q';
+    }
+    
+    /**
+     * Check if a square is a bishop
+     * @param square
+     * @return 
+     */
+    public static boolean isBishop(String square) {
+        return square.charAt(0) == 'B';
+    }
+    
+    /**
+     * Check if a square is a tower
+     * @param square
+     * @return 
+     */
+    public static boolean isTower(String square) {
+        return square.charAt(0) == 'T';
+    }
+    
+    /**
+     * Get scope from square
+     * @param square
+     * @return 
+     */
+    public static char getScope(String square) {
+        return square.charAt(1);
+    }
+    
+    /**
+     * Return the number of squares which doesn't contain wall
+     * @return 
+     */
+    public int getNumCharactersNotWall() {
+        
+        int num = 0;
+
+        for (int i = 0; i < this.numRows; i++) {
+            for (int j = 0; j < this.numCols; j++) {
+                if (!this.containsWall(i, j)) {
+                    num++;
+                }
+            }
+        }
+        return num;
+        
+    }
 }

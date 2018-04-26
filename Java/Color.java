@@ -52,7 +52,7 @@ public class Color {
         
          for (int i = 0; i < puzzle.length; i++) {
              
-            for (int j = 0; j < puzzle.length; j++) {
+            for (int j = 0; j < puzzle[0].length; j++) {
              
                 colorPuzzle[i][j] = puzzle[i][j].charAt(2);
             } 
