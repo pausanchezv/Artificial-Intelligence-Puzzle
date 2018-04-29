@@ -38,6 +38,21 @@ But even if we are using a greedy solution, there are some cases in which a good
  
 The conclusion is that, given that the heuristic is just a numerical value, we can have some different heuristics which return different values from different scales, so we cannot call different heuristics from the same A*, but we can call 4 distinct A*, compare 4 results and finally choose the best one.
  
+## Animated Solver
+
+An animated solver is needed to see that the A-Star algorithm is working correctly and it is not giving us any wrong sequence of actions.
+
+First of all we need to build the html of the matrix. It is closed under a UL tag, so our squares are constituted through LI tags.
+
+Every LI has several data attributes that are gonna help us to build the matrix as fast as possible. However these attributes won't useful to solve the problem since they are accessible through the browser console and it means that any user could hurt the application. And I don't want that! Instead, a closed JS Object is gonna manage the whole process.
+
+Things are tight when we have to do the variable change since the start square will have to be the goal square and so on... The easiest way to do that involves refilling the whole matrix because doing that is easier than to have to recompute all distances, all effects, all timers, that's not worth it!
+
+The next stage is easy, we just have to use the animate jQuery function to compute the square start effect, and then use its callback to compute the goal square effect.
+
+The point is how we will make the effects happen one after another. Easy! We just have to use the async foreach provided by jQuery and set a timer inside it. This is not the unique way, but it works well!
+
+
  
 [www.pausanchezv.com](http://pausanchezv.com/) 
 
