@@ -108,9 +108,7 @@ public class LevelGenerator {
         
         // Fill the color array
         while (colors.size() < numColors) {
-            
-            //System.out.println("YEAH " + colors.size() + " " + numColors + " " + (int)  Math.round((Math.random() * (genericColors.length - 1))));
-            
+                        
             // Generate a random color
             char color = genericColors[(int) Math.round((Math.random() * (genericColors.length - 1)))];
             
@@ -253,8 +251,12 @@ public class LevelGenerator {
         
         // Add colors to the puzzle
         if (!addCharacterColor(puzzleArray, colors)) {
+            
+            // TODO: Test
             System.err.println("Recursion Color");
-            getGeneratedArray(distribution, colors, numRows, numCols);
+            int [] aSize = {numRows, numCols};
+            ArrayList<String> newColors = getPuzzleColors(aSize);
+            return getGeneratedArray(distribution, newColors, numRows, numCols);
         }
         
         // Shuffle the puzzle before adding the colors
@@ -299,8 +301,6 @@ public class LevelGenerator {
         ArrayList<String> cloneColor;
         ArrayList<String> clone;
         
-        
-        
         do {
             
             // Get a clone of start array
@@ -313,9 +313,6 @@ public class LevelGenerator {
             arrayColor = Util.getArrayColor(array);
             cloneColor = Util.getArrayColor(clone);
             
-            
-            
-            
         } while (Util.arrayListEquals(arrayColor, cloneColor));
         
         // Goal array
@@ -325,7 +322,6 @@ public class LevelGenerator {
         for (int i = 0; i < array.size(); i++) {
             goal.add(String.valueOf(clone.get(i).charAt(2)));
         }
-        
         
         return goal; 
     }
@@ -370,7 +366,6 @@ public class LevelGenerator {
         System.out.println("");
         System.out.println("Start state:");
 
-        
         for (int i = 0; i < puzzle.length; i++) {
             System.out.println(Arrays.toString(puzzle[i]));
         }

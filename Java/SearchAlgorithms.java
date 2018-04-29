@@ -30,6 +30,7 @@ public class SearchAlgorithms {
     
     // Number of expanded nodes
     public static int numExpandedStates = 0;
+    private static final int MAX_EXPANDED_STATES = 5000;
     
     /**
      * Get Actions
@@ -443,6 +444,11 @@ public class SearchAlgorithms {
                 
                 numExpandedStates++;
                 
+                // Check the expanded nodes and break if it's necessary
+                if (numExpandedStates > MAX_EXPANDED_STATES) {
+                    return new ArrayList();
+                }
+                
                 // Return the solution
                 if (Arrays.deepEquals(color.getColor(), goal)) {
                     return getSearchSolution(node);
@@ -492,6 +498,11 @@ public class SearchAlgorithms {
             if (!visited.contains(node.getPuzzle())) {
                 
                 numExpandedStates++;
+                
+                // Check the expanded nodes and break if it's necessary
+                if (numExpandedStates > MAX_EXPANDED_STATES) {
+                    return new ArrayList();
+                }
                 
                 // Return the solution
                 if (Arrays.deepEquals(color.getColor(), goal)) {
@@ -547,7 +558,7 @@ public class SearchAlgorithms {
                 numExpandedStates++;
                 
                 // Check the expanded nodes and break if it's necessary
-                if (numExpandedStates > 5000) {
+                if (numExpandedStates > MAX_EXPANDED_STATES) {
                     return new ArrayList();
                 }
                 
