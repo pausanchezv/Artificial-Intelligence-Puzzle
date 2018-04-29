@@ -14,7 +14,7 @@
  *
  **********************************************
  *
- * An animated solver is needed to see that the A-Star algorithm is working correctly and it is not giving us any wrong action sequence.
+ * An animated solver is needed to see that the A-Star algorithm is working correctly and it is not giving us any wrong sequence of actions.
  *
  * First of all we need to build the html of the matrix. It is closed under a UL tag, so our squares are constituted through LI tags.
  * Every LI has several data attributes that are gonna help us to build the matrix as fast as possible. However these attributes won't useful to solve the problem since they are accessible through the browser console and it means that any user could hurt the application. And I don't want that! Instead, a closed JS Object is gonna manage the whole process.
@@ -190,6 +190,8 @@ AnimatedSolver.prototype = {
                     newCol = col - action.value;
                     $newSquare = outerThis.getSquareDOM(newRow, newCol);
 
+                    $newSquare.css('z-index', '50');
+
                     $square.animate({
                         left: - (distanceInt * action.value)
                     }, timeEffectLarge, 'swing', function() {
@@ -208,6 +210,8 @@ AnimatedSolver.prototype = {
                     newCol = col + action.value;
                     $newSquare = outerThis.getSquareDOM(newRow, newCol);
 
+                    $newSquare.css('z-index', '50');
+
                     $square.animate({
                         left: distanceInt * action.value
                     }, timeEffectLarge, 'swing', function() {
@@ -225,6 +229,8 @@ AnimatedSolver.prototype = {
 
                     newRow = row - action.value;
                     $newSquare = outerThis.getSquareDOM(newRow, newCol);
+
+                    $newSquare.css('z-index', '50');
 
                     $square.animate({
                         top: - (distanceInt * action.value)
@@ -246,6 +252,8 @@ AnimatedSolver.prototype = {
                     newRow = row + action.value;
                     $newSquare = outerThis.getSquareDOM(newRow, newCol);
 
+                    $newSquare.css('z-index', '50');
+
                     $square.animate({
                         top: distanceInt * action.value
                     }, timeEffectLarge, 'swing', function() {
@@ -266,6 +274,8 @@ AnimatedSolver.prototype = {
                     newCol = col - action.value;
 
                     $newSquare = outerThis.getSquareDOM(newRow, newCol);
+
+                    $newSquare.css('z-index', '50');
 
                     $square.animate({
                         top: - (distanceInt * action.value),
@@ -290,6 +300,8 @@ AnimatedSolver.prototype = {
 
                     $newSquare = outerThis.getSquareDOM(newRow, newCol);
 
+                    $newSquare.css('z-index', '50');
+
                     $square.animate({
                         top: - (distanceInt * action.value),
                         left: distanceInt * action.value
@@ -313,6 +325,8 @@ AnimatedSolver.prototype = {
 
                     $newSquare = outerThis.getSquareDOM(newRow, newCol);
 
+                    $newSquare.css('z-index', '50');
+
                     $square.animate({
                         top: distanceInt * action.value,
                         left: distanceInt * action.value
@@ -334,6 +348,8 @@ AnimatedSolver.prototype = {
                     newCol = col - action.value;
 
                     $newSquare = outerThis.getSquareDOM(newRow, newCol);
+
+                    $newSquare.css('z-index', '50');
 
                     $square.animate({
                         top: distanceInt * action.value,

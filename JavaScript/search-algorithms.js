@@ -29,27 +29,50 @@ var SearchAlgorithms = {
 
     // Declarations
     numExpandedStates: 0,
+    maxExpandedStates: 5000,
     actions: [],
     puzzles: [],
 
     /**
      * Building the search solution
      * @param node
+     * @param goal
      */
-    constructSearchSolution: function(node) {
+    constructSearchSolution: function(node, goal) {
 
-        // Traverse through the node whilst it has parent
-        while (node.getParent() !== null) {
-
+        do {
             // Push the new action
             SearchAlgorithms.actions.push(node.getAction());
             SearchAlgorithms.puzzles.push(node.getPuzzle());
             node = node.getParent();
         }
 
+        // Traverse through the node whilst it has parent
+        while (node.getParent() !== null);
+
         // Reverse the solution arrays
         SearchAlgorithms.actions.reverse();
         SearchAlgorithms.puzzles.reverse();
+
+        var expected = SearchAlgorithms.puzzles[SearchAlgorithms.puzzles.length - 1].getColor().getColor();
+
+        //TODO:: Replace this piece of shit
+
+        /*console.log("AQUIII");
+        console.log(expected);
+        console.log(goal);
+        console.log(SearchAlgorithms.puzzles.length);
+        console.log(SearchAlgorithms.actions.length);*/
+
+        for (var i = 0; i < goal.length; i++) {
+            for (var j = 0; j < goal[0].length; j++) {
+                if (expected[i][j] !== goal[i][j]) {
+                    SearchAlgorithms.actions = [];
+                    SearchAlgorithms.puzzles = [];
+                    alert("SEEEEEEEEEEEEEEEEH JODER PUTA BIDA");
+                }
+            }
+        }
     },
 
     /**
@@ -92,7 +115,11 @@ var SearchAlgorithms = {
             // Check if the color matrix is found in visited array
             if (!Util.checkIfArrayContainsMatrix(visited, node.getPuzzle())) {
 
+                // Expanded states control
                 SearchAlgorithms.numExpandedStates++;
+                if (SearchAlgorithms.numExpandedStates > SearchAlgorithms.maxExpandedStates) {
+                    return [];
+                }
 
                 // Return the solution
                 if (Util.matrixEquals(color.getColor(), goal)) {
@@ -145,7 +172,11 @@ var SearchAlgorithms = {
             // Check if the color matrix is found in visited array
             if (!Util.checkIfArrayContainsMatrix(visited, node.getPuzzle())) {
 
+                // Expanded states control
                 SearchAlgorithms.numExpandedStates++;
+                if (SearchAlgorithms.numExpandedStates > SearchAlgorithms.maxExpandedStates) {
+                    return [];
+                }
 
                 // Return the solution
                 if (Util.matrixEquals(color.getColor(), goal)) {
@@ -197,15 +228,15 @@ var SearchAlgorithms = {
             // Check if the color matrix is found in visited array
             if (!Util.checkIfArrayContainsMatrix(visited, node.getPuzzle())) {
 
+                // Expanded states control
                 SearchAlgorithms.numExpandedStates++;
-
-                if (SearchAlgorithms.numExpandedStates > 5000) {
+                if (SearchAlgorithms.numExpandedStates > SearchAlgorithms.maxExpandedStates) {
                     return [];
                 }
 
                 // Return the solution
                 if (Util.matrixEquals(color.getColor(), goal)) {
-                    return SearchAlgorithms.constructSearchSolution(node);
+                    return SearchAlgorithms.constructSearchSolution(node, goal); //TODO: don't pass goal state
                 }
 
                 visited.push(node.getPuzzle());
@@ -367,7 +398,6 @@ SearchProblem.prototype = {
     showResult: function() {
 
         /*for (var i = 0; i < this.getNumActions(); i++) {
-
             console.log(SearchAlgorithms.actions[i]);
             console.log(SearchAlgorithms.puzzles[i]);
         }*/
@@ -496,7 +526,7 @@ var Util = {
     matrixEquals: function (A, B) {
 
         for (var i = 0; i < A.length; i++) {
-            for (var j = 0; j < A.length; j++) {
+            for (var j = 0; j < A[0].length; j++) {
                 if (A[i][j] !== B[i][j]) {
                     return false;
                 }

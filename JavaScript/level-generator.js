@@ -262,7 +262,8 @@ LevelGenerator.prototype = {
         // Add colors to the puzzle
         if (!this.addCharacterColor(puzzleArray, colors)) {
             alert("Recursion color");
-            this.getGeneratedArray(distribution, colors, numRows, numCols);
+            var newColors = this.getPuzzleColors([numRows, numCols]);
+            return this.getGeneratedArray(distribution, newColors, numRows, numCols);
         }
 
         // Shuffle the puzzle after adding the colors
@@ -361,6 +362,7 @@ LevelGenerator.prototype = {
         console.log(puzzle);
         console.log("Goal state:");
         console.log(goal);
+        console.log("");
     },
 
     /**
@@ -423,15 +425,17 @@ LevelGenerator.prototype = {
         var distribution_7 = {blockPercentage: 10, bishopPercentage: 15, queenPercentage: 25};
         var distribution_8 = {blockPercentage: 5, bishopPercentage: 5, queenPercentage: 5};
         var distribution_9 = {blockPercentage: 5, bishopPercentage: 0, queenPercentage: 0};
+        var distribution_10 = {blockPercentage: 45, bishopPercentage: 0, queenPercentage: 55};
 
         // Make array with the distributions
         var distributions = [distribution_1, distribution_2, distribution_3, distribution_4, distribution_5,
-            distribution_6, distribution_7, distribution_8, distribution_9];
+            distribution_6, distribution_7, distribution_8, distribution_9, distribution_10];
 
         // Get a random number
         var randNum = Math.round(Math.random() * ((distributions.length - 1)));
 
         // return a random distribution
+        //return distribution_9;
         return distributions[randNum];
 
     },
