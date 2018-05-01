@@ -174,7 +174,7 @@ public class SearchAlgorithms {
                     // Adding distance 3
                     if (Puzzle.getScope(square) == '3') {
 
-                        if (row > 2 && col > 2 && !puzzle.containsWall(row - 3, col - 3) && !puzzle.containsWall(row - 1, col - 1) && !puzzle.containsWall(row - 1, col - 1)) {
+                        if (row > 2 && col > 2 && !puzzle.containsWall(row - 3, col - 3) && !puzzle.containsWall(row - 2, col - 2) && !puzzle.containsWall(row - 1, col - 1)) {
                             actions.get(key).add(new Action("up-left", 3));
                         }
 
@@ -380,18 +380,21 @@ public class SearchAlgorithms {
      */
     private static ArrayList<Action> getSearchSolution(State node) {
         
-        // Traverse through the node whilst it has parent
-        while (node.getParent() != null) {
+        do {
             
             // Push the new action
             SearchProblem.actions.add(node.getAction());
             SearchProblem.puzzles.add(node.getPuzzle());
-            node = node.getParent();         
-        }
+            node = node.getParent();   
+        
+        // Traverse through the node whilst it has parent
+        } while (node.getParent() != null);
         
         // Reverse the solution arrays
         Collections.reverse(SearchProblem.actions);
         Collections.reverse(SearchProblem.puzzles);
+        
+        //TODO: it may be necessary to check the colors
         
         return SearchProblem.actions; 
     }

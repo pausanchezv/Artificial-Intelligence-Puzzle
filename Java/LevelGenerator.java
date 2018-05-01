@@ -447,17 +447,38 @@ public class LevelGenerator {
         Distribution distribution_7 = new Distribution(10, 15, 25);
         Distribution distribution_8 = new Distribution(5, 5, 5);
         Distribution distribution_9 = new Distribution(5, 0, 0);
+        Distribution distribution_10 = new Distribution(45, 0, 55);
         
         // Get a random number
         distributions.add(distribution_1); distributions.add(distribution_2);
         distributions.add(distribution_3); distributions.add(distribution_4);
         distributions.add(distribution_5); distributions.add(distribution_6);
         distributions.add(distribution_7); distributions.add(distribution_8);
-        distributions.add(distribution_9);
+        distributions.add(distribution_9); distributions.add(distribution_10);
         
         int randNum = (int) Math.round(Math.random() * ((distributions.size() - 1)));
         
         // return a random distribution
         return distributions.get(randNum);
+    }
+    
+    /**
+     * Get best solution
+     * @param solutions
+     * @return 
+     */
+    public static ArrayList<Action> getBestSolution(ArrayList<ArrayList<Action>> solutions) {
+        
+        int bestSize = (int) Double.POSITIVE_INFINITY;
+        ArrayList<Action> bestSolution = null;
+        
+        for (ArrayList solution: solutions) {
+            
+            if (solution.size() < bestSize && solution.size() > 0) {
+                bestSize = solution.size();
+                bestSolution = solution;
+            }
+        }
+        return bestSolution;   
     }
 }

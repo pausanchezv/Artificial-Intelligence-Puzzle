@@ -96,4 +96,12 @@ public final class SearchProblem {
         SearchAlgorithms.numExpandedStates = 0;
     }
     
+    /**
+     * Solution
+     * @return 
+     */
+    public ArrayList<Action> getSolution() {
+        return actions;
+    }
+    
 }
