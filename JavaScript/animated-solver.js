@@ -146,7 +146,10 @@ AnimatedSolver.prototype = {
      */
     animatedSolver: function() {
 
-        $("#left-state").find(">ul").effect("bounce", 500);
+        soundHandler.play(musics.loop);
+        soundHandler.setVolume(musics.loop, 0.4);
+
+        $("#left-state").find(">ul").effect("bounce", 800);
 
         // The distance is the size of the square
         var distanceInt = 100;
@@ -375,6 +378,11 @@ AnimatedSolver.prototype = {
                 // Actions when the actions are finished
                 if (numMovesLeft === 0) {
                     setTimeout(function() {
+                        soundHandler.stop(musics.loop);
+
+                        soundHandler.setVolume(effects.completed, 0.5);
+                        soundHandler.play(effects.completed);
+
                         $("#generate-level").show();
                         var $html = $("#right-state").find(">ul").html();
                         $("#left-state").find(">ul").html($html);
@@ -383,6 +391,8 @@ AnimatedSolver.prototype = {
 
                     }, 1500);
                 }
+
+                soundHandler.play(effects.placeFigure);
 
             }, timeIteration + i * timeIteration);
         });
@@ -439,6 +449,8 @@ AnimatedSolver.prototype = {
                     $("#right-state").show();
                     $("#generate-level").show();
                 }
+
+                soundHandler.play(effects.place);
 
             }, i + 100 * i);
 
