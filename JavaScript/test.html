@@ -15,8 +15,14 @@
     <div class="container pt-5 pb-5">
         <div class="row">
             <div class="col-12">
-                <h1><small class="fa fa-heart"></small> <em>Artificial Intelligence</em> <strong>Puzzle</strong></h1>
-                <p>Pau Sanchez Valdivieso - <a href="https://www.pausanchezv.com" target="_blank">www.pausanchezv.com</a></p>
+                <div class="pull-left">
+                    <h1><small class="fa fa-heart"></small> <em>Artificial Intelligence</em> <strong>Puzzle</strong></h1>
+                    <p>Pau Sanchez Valdivieso - <a href="https://www.pausanchezv.com" target="_blank">www.pausanchezv.com</a></p>
+                </div>
+                <div class="pull-right align-right">
+                    <span id="audio-control" class="fa fa-volume-up"></span>
+                </div>
+
             </div>
             <div id="left-state" class="col-lg-7 col-md-12 mt-4">
                 <div class="transparent large-shadow">
@@ -59,8 +65,8 @@
         </div>
         <div class="clear"></div>
         <div class="mt-5">
-            <a id="generate-level" class="btn mt-1 btn-primary large-shadow">Generate a  random puzzle</a>
-            <a id="level-solver" class="btn mt-5 ml-3 btn-danger large-shadow display">Solve the puzzle</a>
+            <a id="generate-level" class="btn mt-1 btn-primary large-shadow"><small class="fa fa-cog"></small> Generate a  random puzzle</a>
+            <a id="level-solver" class="btn mt-5 ml-3 btn-danger large-shadow display"><small class="fa fa-star"></small> Solve the puzzle</a>
         </div>
     </div>
 </section>
@@ -143,7 +149,7 @@
         // Get some generated level
         $("#generate-level").click(function() {
 
-            $(".transparent > p").html('<i class="fas fa-spinner fa-spin"></i>');
+            $(".transparent > p").html('<p><i class="fas fa-spinner fa-spin"></i>&nbsp;&nbsp;Generating the puzzle</p>');
 
             // DOM Actions
             $(this).hide();
@@ -164,11 +170,14 @@
                 animatedSolver.buildLevelHTML();
                 animatedSolver.buildStartStateAnimation();
 
-            },100);
+            }, 100);
         });
 
         // Solve the generated level
         $("#level-solver").click(function() {
+
+            soundHandler.setVolume(effects.startSolver, 0.5);
+            soundHandler.play(effects.startSolver);
 
             $(this).hide();
             $("#generate-level").hide();
@@ -241,6 +250,13 @@
             console.log("Best Solution Size: " + actions.length);
             return level;
         }
+
+        // Stop sounds
+        $("#audio-control").click(function() {
+            $(this).detach();
+            volumeOff();
+            soundHandler.stopSounds = !0;
+        });
     });
 </script>
 
@@ -252,4 +268,5 @@
 <script src="assets/js/search-algorithms.js"></script>
 <script src="assets/js/level-generator.js"></script>
 <script src="assets/js/animated-solver.js"></script>
+<script src="assets/js/sound-handler.js"></script>
 
