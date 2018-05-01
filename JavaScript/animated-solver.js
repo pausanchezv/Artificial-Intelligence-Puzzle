@@ -64,8 +64,6 @@ AnimatedSolver.prototype = {
                 this.objectData[row.toString() + col.toString()].kind = start[row][col][0];
                 this.objectData[row.toString() + col.toString()].scope = start[row][col][1];
                 this.objectData[row.toString() + col.toString()].color = start[row][col][2];
-                this.objectData[row.toString() + col.toString()].cssTop = 0;
-                this.objectData[row.toString() + col.toString()].cssLeft = 0;
             }
             html += '<div class="clear"></div>';
 
@@ -148,6 +146,8 @@ AnimatedSolver.prototype = {
      */
     animatedSolver: function() {
 
+        $("#left-state").find(">ul").effect("bounce", 500);
+
         // The distance is the size of the square
         var distanceInt = 100;
 
@@ -159,7 +159,7 @@ AnimatedSolver.prototype = {
         // Instance that is used within the async foreach
         var outerThis = this;
 
-        // Asyn foreach to handle the effects
+        // Async foreach to handle the effects
         $.each(this.actions, function(i, action) {
 
             // Timeout among effects
@@ -367,7 +367,81 @@ AnimatedSolver.prototype = {
                     });
                 }
 
+                // Moves left control
+                var $movesLeft = $('#moves-left').find("strong");
+                var numMovesLeft = $movesLeft.text();
+                $movesLeft.text(--numMovesLeft);
+
+                // Actions when the actions are finished
+                if (numMovesLeft === 0) {
+                    setTimeout(function() {
+                        $("#generate-level").show();
+                        var $html = $("#right-state").find(">ul").html();
+                        $("#left-state").find(">ul").html($html);
+                        $("#generate-text").show();
+                        $("#moves-left").hide();
+
+                    }, 1500);
+                }
+
             }, timeIteration + i * timeIteration);
+        });
+    },
+
+    /**
+     * Animated grid constructor
+     */
+    buildStartStateAnimation: function() {
+
+        // Hide transparent
+        $(".transparent").hide();
+
+        // Get DOM elements
+        var $game = $("#game");
+        var $leftState = $game.find("#left-state");
+        var $rightState = $game.find("#right-state");
+        var $ulStart = $leftState.find("ul");
+        var $startSquares = $ulStart.find("> li");
+        var $ulGoal = $game.find("#right-state").find("ul");
+
+        // Hide DOM
+        $rightState.hide();
+        $ulGoal.hide();
+
+        // Change matrix overflow
+        $ulStart.css("overflow", "visible");
+
+        // Place the squares away
+        $startSquares.hide().css("left", 800);
+
+        // Instance that is used within the async foreach
+        var outerThis = this;
+
+        // Traverse all the squares
+        $startSquares.each(function(i, obj) {
+
+            // Inner animation timer
+            setTimeout(function() {
+
+                // Individual action for each square
+                $(obj).show().animate({
+                    left: 0
+                }, 200, "swing");
+
+                // Actions when the last square is placed
+                if (i === $startSquares.length -1) {
+                    $rightState.show();
+                    $ulStart.css("overflow", "hidden");
+                    $ulGoal.show().effect("shake", 500);
+                    $('#moves-left').fadeIn().find("strong").text(outerThis.actions.length);
+                    $("#level-solver").show();
+                    $("#solve-text").show();
+                    $("#right-state").show();
+                    $("#generate-level").show();
+                }
+
+            }, i + 100 * i);
+
         });
     }
 };

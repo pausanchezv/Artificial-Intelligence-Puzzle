@@ -54,22 +54,13 @@ var SearchAlgorithms = {
         SearchAlgorithms.actions.reverse();
         SearchAlgorithms.puzzles.reverse();
 
+        // If the expected color is not equal to goal, then empty the arrays
         var expected = SearchAlgorithms.puzzles[SearchAlgorithms.puzzles.length - 1].getColor().getColor();
-
-        //TODO:: Replace this piece of shit
-
-        /*console.log("AQUIII");
-        console.log(expected);
-        console.log(goal);
-        console.log(SearchAlgorithms.puzzles.length);
-        console.log(SearchAlgorithms.actions.length);*/
-
         for (var i = 0; i < goal.length; i++) {
             for (var j = 0; j < goal[0].length; j++) {
                 if (expected[i][j] !== goal[i][j]) {
                     SearchAlgorithms.actions = [];
                     SearchAlgorithms.puzzles = [];
-                    alert("SEEEEEEEEEEEEEEEEH JODER PUTA BIDA");
                 }
             }
         }
@@ -123,7 +114,7 @@ var SearchAlgorithms = {
 
                 // Return the solution
                 if (Util.matrixEquals(color.getColor(), goal)) {
-                    return SearchAlgorithms.constructSearchSolution(node);
+                    return SearchAlgorithms.constructSearchSolution(node, goal);
                 }
 
                 visited.push(node.getPuzzle());
@@ -180,7 +171,7 @@ var SearchAlgorithms = {
 
                 // Return the solution
                 if (Util.matrixEquals(color.getColor(), goal)) {
-                    return SearchAlgorithms.constructSearchSolution(node);
+                    return SearchAlgorithms.constructSearchSolution(node, goal);
                 }
 
                 visited.push(node.getPuzzle());
@@ -765,7 +756,7 @@ function getActions(state) {
                 // Adding distance 3
                 if (puzzle.getScope(square) === '3') {
 
-                    if (row > 2 && col > 2 && !puzzle.containsWall(row - 3, col - 3) && !puzzle.containsWall(row - 1, col - 1) && !puzzle.containsWall(row - 1, col - 1)) {
+                    if (row > 2 && col > 2 && !puzzle.containsWall(row - 3, col - 3) && !puzzle.containsWall(row - 2, col - 2) && !puzzle.containsWall(row - 1, col - 1)) {
                         actions[[row, col]].push(new Action("up-left", 3));
                     }
 
