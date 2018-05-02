@@ -1,6 +1,9 @@
 # Puzzle
 Artificial Intelligence - Puzzle Game
 
+![Artificial Intelligence Puzzle](http://www.pausanchezv.com/puzzle-x/assets/img/astar-puzzle.jpg)
+[/www.pausanchezv.com/artificial-intelligence/puzzle](http://www.pausanchezv.com/artificial-intelligence/puzzle) 
+
 ## Level Generator
 
 There are basically two models of generated levels. The first one is based on an absolutely random way.
