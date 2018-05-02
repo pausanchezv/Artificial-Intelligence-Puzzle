@@ -2,7 +2,7 @@
 Artificial Intelligence - Puzzle Game
 
 ![Artificial Intelligence Puzzle](http://www.pausanchezv.com/puzzle-x/assets/img/astar-puzzle.jpg)
-[/www.pausanchezv.com/artificial-intelligence/puzzle](http://www.pausanchezv.com/artificial-intelligence/puzzle) 
+[www.pausanchezv.com/artificial-intelligence/puzzle](http://www.pausanchezv.com/artificial-intelligence/puzzle) 
 
 ## Level Generator
 
