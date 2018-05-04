@@ -26,6 +26,13 @@
  * The point is how we will make the effects happen one after another. Easy! We just have to use the async foreach provided by jQuery and set a timer inside it. This is not the unique way, but it works well!
  *
  **********************************************/
+
+/**
+ * Animated Solver Class Constructor
+ * @param level
+ * @param actions
+ * @constructor
+ */
 function AnimatedSolver(level, actions) {
 
     // Level to solve
