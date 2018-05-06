@@ -41,13 +41,13 @@
  */
 function LevelGenerator(difficulty) {
 
+    // It's the difficulty of the level
+    this.difficulty = difficulty;
+
     // Difficulty will be 'hard' if it's not defined
     if (difficulty === undefined) {
         this.difficulty = 'expert';
     }
-
-    // It's the difficulty of the level
-    this.difficulty = difficulty;
 }
 
 /**
@@ -241,7 +241,7 @@ LevelGenerator.prototype = {
 
         // Add colors to the puzzle
         if (!this.addCharacterColor(puzzleArray, colors)) {
-            alert("Recursion color");
+            //alert("Recursion color");
             var newColors = this.getPuzzleColors([numRows, numCols]);
             return this.getGeneratedArray(distribution, newColors, numRows, numCols);
         }
@@ -322,6 +322,7 @@ LevelGenerator.prototype = {
     showLevelFeatures: function(rows, cols, colors, distribution, array, puzzle, numRecursiveCalls, goal) {
 
         console.log("");
+        console.log("Level's kind: Absolutely random");
         console.log("Puzzle distribution percentages:");
         console.log("Queen percentage: " + distribution.queenPercentage + "%");
         console.log("Bishop percentage: " + distribution.bishopPercentage + "%");
@@ -406,16 +407,21 @@ LevelGenerator.prototype = {
         var distribution_8 = {blockPercentage: 5, bishopPercentage: 5, queenPercentage: 5};
         var distribution_9 = {blockPercentage: 5, bishopPercentage: 0, queenPercentage: 0};
         var distribution_10 = {blockPercentage: 45, bishopPercentage: 0, queenPercentage: 55};
+        var distribution_11 = {blockPercentage: 20, bishopPercentage: 45, queenPercentage: 35};
+        var distribution_12 = {blockPercentage: 40, bishopPercentage: 40, queenPercentage: 20};
+        var distribution_13 = {blockPercentage: 60, bishopPercentage: 10, queenPercentage: 30};
+        var distribution_14 = {blockPercentage: 55, bishopPercentage: 0, queenPercentage: 35};
+        var distribution_15 = {blockPercentage: 70, bishopPercentage: 5, queenPercentage: 20};
 
         // Make array with the distributions
         var distributions = [distribution_1, distribution_2, distribution_3, distribution_4, distribution_5,
-            distribution_6, distribution_7, distribution_8, distribution_9, distribution_10];
+            distribution_6, distribution_7, distribution_8, distribution_9, distribution_10, distribution_11,
+            distribution_12, distribution_13, distribution_14, distribution_15];
 
         // Get a random number
         var randNum = Math.round(Math.random() * ((distributions.length - 1)));
 
         // return a random distribution
-        //return distribution_9;
         return distributions[randNum];
 
     },

@@ -471,6 +471,37 @@ var Util = {
         }
     },
 
+
+    arrayFromMatrix: function(matrix) {
+
+        var array = [];
+
+        for (var i = 0; i < matrix.length; i++) {
+            for (var j = 0; j < matrix[0].length; j++) {
+                array.push(matrix[i][j]);
+            }
+        }
+
+        return array;
+    },
+
+
+    matrixShuffleWithNeedle: function(matrix) {
+
+        var array = this.arrayFromMatrix(matrix);
+
+        this.arrayShuffleWithNeedle(array, this.Constants.WALL);
+
+        var cont = 0;
+
+        for (var i = 0; i < matrix.length; i++) {
+            for (var j = 0; j < matrix[0].length; j++) {
+                matrix[i][j] = array[cont++];
+            }
+        }
+
+    },
+
     /**
      * Add successor to state successors
      *

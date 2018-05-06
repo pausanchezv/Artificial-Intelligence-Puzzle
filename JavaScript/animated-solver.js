@@ -45,6 +45,8 @@ function AnimatedSolver(level, actions) {
     // Rows $ columns
     this.numRows = level[0].length;
     this.numCols = level[0][0].length;
+
+    this.blockType = ['', 'blank'][Math.round(Math.random() * (1 - 0) + 0)] //[Math.round(Math.random()];
 }
 
 /**
@@ -91,6 +93,7 @@ AnimatedSolver.prototype = {
 
         // Add html
         $("#right-state").find("> ul").html(html);
+        $("ul").find("[data-color='#']").addClass(this.blockType);
     },
 
 
@@ -136,6 +139,7 @@ AnimatedSolver.prototype = {
 
         // Add HTML
         $("#left-state").find("> ul").html(html);
+        $("ul").find("[data-color='#']").addClass(this.blockType);
     },
 
     /**
