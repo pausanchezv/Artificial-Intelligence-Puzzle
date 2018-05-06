@@ -46,7 +46,7 @@ function AnimatedSolver(level, actions) {
     this.numRows = level[0].length;
     this.numCols = level[0][0].length;
 
-    this.blockType = ['', 'blank'][Math.round(Math.random() * (1 - 0) + 0)] //[Math.round(Math.random()];
+    this.blockType = [/*'',*/ 'blank', 'wall-gold', 'wall-silver'][Math.round(Math.random() * 3)];
 }
 
 /**
@@ -93,7 +93,7 @@ AnimatedSolver.prototype = {
 
         // Add html
         $("#right-state").find("> ul").html(html);
-        $("ul").find("[data-color='#']").addClass(this.blockType);
+        $("ul").find(">li[data-color='#']").addClass(this.blockType);
     },
 
 
@@ -139,7 +139,7 @@ AnimatedSolver.prototype = {
 
         // Add HTML
         $("#left-state").find("> ul").html(html);
-        $("ul").find("[data-color='#']").addClass(this.blockType);
+        $("ul").find(">li[data-color='#']").addClass(this.blockType);
     },
 
     /**
