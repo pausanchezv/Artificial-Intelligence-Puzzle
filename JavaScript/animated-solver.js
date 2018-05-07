@@ -46,7 +46,7 @@ function AnimatedSolver(level, actions) {
     this.numRows = level[0].length;
     this.numCols = level[0][0].length;
 
-    this.blockType = [/*'',*/ 'blank', 'wall-gold', 'wall-silver'][Math.round(Math.random() * 3)];
+    this.blockType = ['', 'wall-gold', 'wall-silver'][Math.round(Math.random() * 3)];
 }
 
 /**

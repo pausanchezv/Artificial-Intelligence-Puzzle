@@ -40,15 +40,22 @@ var SearchAlgorithms = {
      */
     constructSearchSolution: function(node, goal) {
 
-        do {
-            // Push the new action
-            SearchAlgorithms.actions.push(node.getAction());
-            SearchAlgorithms.puzzles.push(node.getPuzzle());
-            node = node.getParent();
-        }
+        try {
 
-        // Traverse through the node whilst it has parent
-        while (node.getParent() !== null);
+            do {
+                // Push the new action
+                SearchAlgorithms.actions.push(node.getAction());
+                SearchAlgorithms.puzzles.push(node.getPuzzle());
+                node = node.getParent();
+            }
+
+                // Traverse through the node whilst it has parent
+            while (node.getParent() !== null);
+
+        } catch (error) {
+            SearchAlgorithms.actions = [];
+            SearchAlgorithms.puzzles = [];
+        }
 
         // Reverse the solution arrays
         SearchAlgorithms.actions.reverse();
@@ -64,6 +71,8 @@ var SearchAlgorithms = {
                 }
             }
         }
+
+        return SearchAlgorithms.actions;
     },
 
     /**
@@ -472,6 +481,11 @@ var Util = {
     },
 
 
+    /**
+     * Get Array from matrix
+     * @param matrix
+     * @returns {Array}
+     */
     arrayFromMatrix: function(matrix) {
 
         var array = [];
@@ -486,6 +500,10 @@ var Util = {
     },
 
 
+    /**
+     * Matrix shuffle
+     * @param matrix
+     */
     matrixShuffleWithNeedle: function(matrix) {
 
         var array = this.arrayFromMatrix(matrix);
@@ -499,7 +517,6 @@ var Util = {
                 matrix[i][j] = array[cont++];
             }
         }
-
     },
 
     /**

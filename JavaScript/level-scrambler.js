@@ -173,10 +173,10 @@ LevelScrambler.prototype = {
         console.log("");
         console.log("Level's kind: Half random");
         console.log("Puzzle distribution percentages:");
-        console.log("Queen percentage: predetermined");
-        console.log("Bishop percentage: predetermined");
-        console.log("Tower percentage: predetermined");
-        console.log("Block percentage: predetermined");
+        console.log("Queen percentage: random");
+        console.log("Bishop percentage: random");
+        console.log("Tower percentage: random");
+        console.log("Block percentage: random");
         console.log("");
         console.log("Difficulty level: " + this.difficulty);
         console.log("Number of rows: " + start.length);
