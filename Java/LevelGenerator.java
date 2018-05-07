@@ -131,7 +131,7 @@ public class LevelGenerator {
      * Get random scope of characters depending on a simple random number
      * @return 
      */
-    private String getCharacterScope() {
+    public static String getCharacterScope() {
         
         // Get a random number between 0-100
         int randNumCharacter = (int) Math.round(Math.random() * (100 - 1));
@@ -217,7 +217,14 @@ public class LevelGenerator {
         return arrayCont.size() > 1;
     }
     
-    
+    /**
+     * Get generated array
+     * @param distribution
+     * @param colors
+     * @param numRows
+     * @param numCols
+     * @return 
+     */
     private ArrayList<String> getGeneratedArray(Distribution distribution, ArrayList<String> colors, int numRows, int numCols) {
         
         // get the size and generate an empty array that's gonna hold the generated puzzle
@@ -242,9 +249,9 @@ public class LevelGenerator {
         
         // Add the characters to the puzzle
         for (int i = 0; i < numBlocks; i++) puzzleArray.add(Puzzle.WALL);
-        for (int i = 0; i < numQueens; i++) puzzleArray.add("Q" + this.getCharacterScope());
-        for (int i = 0; i < numBishops; i++) puzzleArray.add("B" + this.getCharacterScope());
-        for (int i = 0; i < numTowers; i++) puzzleArray.add("T" + this.getCharacterScope());
+        for (int i = 0; i < numQueens; i++) puzzleArray.add("Q" + getCharacterScope());
+        for (int i = 0; i < numBishops; i++) puzzleArray.add("B" + getCharacterScope());
+        for (int i = 0; i < numTowers; i++) puzzleArray.add("T" + getCharacterScope());
         
         // Shuffle the puzzle before adding the colors
         Collections.shuffle(puzzleArray);
@@ -348,6 +355,7 @@ public class LevelGenerator {
             int numRecursiveCalls
     ) {
         System.out.println("");
+        System.out.println("Level's kind: Absolutely random");
         System.out.println("Puzzle distribution percentages:");
         System.out.println("Queen percentage: " + distribution.getQueenPercentage() + "%");
         System.out.println("Bishop percentage: " + distribution.getBishopPercentage() + "%");
@@ -366,14 +374,14 @@ public class LevelGenerator {
         System.out.println("");
         System.out.println("Start state:");
 
-        for (int i = 0; i < puzzle.length; i++) {
-            System.out.println(Arrays.toString(puzzle[i]));
+        for (String[] x : puzzle) {
+            System.out.println(Arrays.toString(x));
         }
         System.out.println("");
         System.out.println("Goal state:");
         
-        for (int i = 0; i < goal.length; i++) {
-            System.out.println(Arrays.toString(goal[i]));
+        for (String[] x : goal) {
+            System.out.println(Arrays.toString(x));
         }
         System.out.println("");
     }
@@ -449,12 +457,22 @@ public class LevelGenerator {
         Distribution distribution_9 = new Distribution(5, 0, 0);
         Distribution distribution_10 = new Distribution(45, 0, 55);
         
+        
+        Distribution distribution_11 = new Distribution(20, 45, 35);
+        Distribution distribution_12 = new Distribution(40, 40, 20);
+        Distribution distribution_13 = new Distribution(60, 10, 30);
+        Distribution distribution_14 = new Distribution(55, 0, 35);
+        Distribution distribution_15 = new Distribution(70, 5, 20);
+        
         // Get a random number
         distributions.add(distribution_1); distributions.add(distribution_2);
         distributions.add(distribution_3); distributions.add(distribution_4);
         distributions.add(distribution_5); distributions.add(distribution_6);
         distributions.add(distribution_7); distributions.add(distribution_8);
         distributions.add(distribution_9); distributions.add(distribution_10);
+        distributions.add(distribution_11); distributions.add(distribution_12);
+        distributions.add(distribution_13); distributions.add(distribution_14);
+        distributions.add(distribution_15);
         
         int randNum = (int) Math.round(Math.random() * ((distributions.size() - 1)));
         

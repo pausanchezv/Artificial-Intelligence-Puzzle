@@ -22,42 +22,74 @@ public class ApplicationPuzzle {
     public static void main(String[] args) {
         
         // TODO: quit this motherfucker iteration
-        for (int i = 0; i < 1; i++) {
-        
-            LevelGenerator generator = new LevelGenerator("expert");
-
-           // Generate a random level
-            ArrayList<String[][]> level = generator.getGeneratedLevel(true);
-
-             // Get start and goal puzzles
-            String [][] start = level.get(0);
-            String [][] g = level.get(1);
+        for (int i = 0; i < 10000; i++) {
             
-            char [][] goal = Util.toGoalColor(g);
+            // Future generated level
+            ArrayList<String[][]> level;
+            
+            // Array that's gonna hold the four solutions given for the four heuristics
             ArrayList<ArrayList<Action>> solutions = new ArrayList();
-           
-            SearchProblem problem = new SearchProblem(start, goal);
-            long startTime = System.nanoTime();
-            System.out.println("");
-            problem.AStarSearchSolver(Heuristic.Kind.EUCLIDEAN);
-            problem.showResult();
-            long endTime = System.nanoTime();
-            long totalTime = (endTime - startTime)/ 1000000;
-            System.out.println("AStarSearch: " + totalTime + "ms");
-            solutions.add(problem.getSolution());
             
-            problem = new SearchProblem(start, goal);
-            startTime = System.nanoTime();
-            System.out.println("");
-            problem.AStarSearchSolver(Heuristic.Kind.EUCLIDEAN_MATCHINGS);
-            problem.showResult();
-            endTime   = System.nanoTime();
-            totalTime = (endTime - startTime)/ 1000000;
-            System.out.println("AStarSearch: " + totalTime + "ms");
-            solutions.add(problem.getSolution());
+            // Variables
+            boolean canStop = false;
+            SearchProblem problem;
+            long startTime, endTime, totalTime;
+            
+            // Repeat until at least one of heuristics returns a solution
+            do {
+                
+                // Generator objects
+                LevelGenerator generator = new LevelGenerator("expert");
+                LevelScrambler scrambler = new LevelScrambler("expert");
+                
+                // Rand number
+                int randNum = (int) Math.round(Math.random() * 2);
+
+                // Generate a random level
+                if (randNum < 2) {
+                    level = generator.getGeneratedLevel(true);
+                } else {
+                    level = scrambler.getGeneratedLevel(true);
+                }
+
+                // Get start and goal puzzles
+                String [][] start = level.get(0);
+                String [][] g = level.get(1);
+                char [][] goal = Util.toGoalColor(g);
+                
+                problem = new SearchProblem(start, goal);
+                startTime = System.nanoTime();
+                System.out.println("");
+                problem.AStarSearchSolver(Heuristic.Kind.EUCLIDEAN);
+                problem.showResult();
+                endTime = System.nanoTime();
+                totalTime = (endTime - startTime)/ 1000000;
+                System.out.println("AStarSearch: " + totalTime + "ms");
+                
+                if (!problem.getSolution().isEmpty()) {
+                    solutions.add(problem.getSolution());
+                    canStop = true;
+                }
+
+                problem = new SearchProblem(start, goal);
+                startTime = System.nanoTime();
+                System.out.println("");
+                problem.AStarSearchSolver(Heuristic.Kind.EUCLIDEAN_MATCHINGS);
+                problem.showResult();
+                endTime   = System.nanoTime();
+                totalTime = (endTime - startTime)/ 1000000;
+                System.out.println("AStarSearch: " + totalTime + "ms");
+                
+                if (!problem.getSolution().isEmpty()) {
+                    solutions.add(problem.getSolution());
+                    canStop = true;
+                }
+                
+            } while(!canStop);
             
             ArrayList<Action> bestSolution = LevelGenerator.getBestSolution(solutions);
-            System.out.println("Best solution >> " + bestSolution.size()); 
+            System.out.println("\nBest solution >> " + bestSolution.size()); 
+           
         }
     }
     

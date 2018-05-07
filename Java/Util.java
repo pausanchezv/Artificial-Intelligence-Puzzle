@@ -16,6 +16,7 @@
 package applicationpuzzle;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 
 /**
@@ -43,6 +44,22 @@ public class Util {
         }
         
         return true;
+    }
+    
+    /**
+     * Shuffling array with needle
+     * @param array
+     */
+    public static void arrayShuffle(String[] array) {
+       
+        int j, i;
+        String x;
+        for (i = array.length - 1; i > 0; i--) {
+            j = (int) Math.floor(Math.random() * (i + 1));
+            x = array[i];
+            array[i] = array[j];
+            array[j] = x;
+        }
     }
 
     /**
@@ -99,5 +116,61 @@ public class Util {
         }
         
         return color;
+    }
+    
+    
+    /**
+     * Create puzzle clone
+     * @param puzzle
+     * @return 
+     */
+    public static String [][] createPuzzleCopy(String [][] puzzle) {
+        
+        int rows = puzzle.length;
+        int cols = puzzle[0].length;
+        
+        String [][] copy = new String[rows][cols];
+        
+        for (int i = 0; i < rows; i ++) {
+            System.arraycopy(puzzle[i], 0, copy[i], 0, cols);
+        }
+       
+        return copy;
+    }
+    
+    /**
+     * Get array from matrix
+     * @param matrix
+     * @return 
+     */
+    private static ArrayList<String> arrayFromMatrix(String[][] matrix) {
+        
+        ArrayList<String> array = new ArrayList();
+        
+        for (String[] row : matrix) {
+            array.addAll(Arrays.asList(row));
+        }
+        
+        return array;
+        
+    }
+    
+    /**
+     * Shuffle matrix depends on a needle
+     * @param matrix 
+     */
+    public static void matrixShuffleWithNeedle(String [][] matrix) {
+        
+        ArrayList<String> array = arrayFromMatrix(matrix);
+
+        arrayShuffleWithNeedle(array, Puzzle.WALL);
+
+        int cont = 0;
+
+        for (String[] row : matrix) {
+            for (int j = 0; j < matrix[0].length; j++) {
+                row[j] = array.get(cont++);
+            }
+        }
     }
 }

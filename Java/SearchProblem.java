@@ -78,10 +78,10 @@ public final class SearchProblem {
      */
     public void showResult() {
         
-         for (int i = 0; i < actions.size(); i++) {
+         /*for (int i = 0; i < actions.size(); i++) {
             System.out.println("Action >> " + actions.get(i));
             System.out.println("\n" + puzzles.get(i).puzzleToString());
-        }
+        }*/
         
         System.out.println("Num actions >> " + actions.size());
         System.out.println("Num expanded estates >> " + SearchAlgorithms.numExpandedStates);
