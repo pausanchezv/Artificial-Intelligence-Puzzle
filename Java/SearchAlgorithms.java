@@ -380,22 +380,29 @@ public class SearchAlgorithms {
      */
     private static ArrayList<Action> getSearchSolution(State node) {
         
-        do {
+        try {
+            do {
+
+                // Push the new action
+                SearchProblem.actions.add(node.getAction());
+                SearchProblem.puzzles.add(node.getPuzzle());
+                node = node.getParent();   
+
+            // Traverse through the node whilst it has parent
+            } while (node.getParent() != null);
             
-            // Push the new action
-            SearchProblem.actions.add(node.getAction());
-            SearchProblem.puzzles.add(node.getPuzzle());
-            node = node.getParent();   
-        
-        // Traverse through the node whilst it has parent
-        } while (node.getParent() != null);
+        } catch (Exception e) {
+            SearchProblem.actions.clear();
+            SearchProblem.puzzles.clear();
+            
+            return SearchProblem.actions; 
+        }
         
         // Reverse the solution arrays
         Collections.reverse(SearchProblem.actions);
         Collections.reverse(SearchProblem.puzzles);
         
         //TODO: it may be necessary to check the colors
-        
         return SearchProblem.actions; 
     }
     

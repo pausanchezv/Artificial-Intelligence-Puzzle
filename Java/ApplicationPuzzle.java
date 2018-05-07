@@ -20,9 +20,10 @@ public class ApplicationPuzzle {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
+       
         
         // TODO: quit this motherfucker iteration
-        for (int i = 0; i < 10000; i++) {
+        for (int i = 0; i < 1; i++) {
             
             // Future generated level
             ArrayList<String[][]> level;
@@ -83,7 +84,7 @@ public class ApplicationPuzzle {
                 if (!problem.getSolution().isEmpty()) {
                     solutions.add(problem.getSolution());
                     canStop = true;
-                }
+                }             
                 
             } while(!canStop);
             
